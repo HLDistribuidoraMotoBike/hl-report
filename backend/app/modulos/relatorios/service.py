@@ -6,7 +6,9 @@ from typing import Optional
 from hlcore.auth import PAPEL_ADMIN
 from hlcore.erros import ErroNegocio
 
-from app.modulos.relatorios import catalogo, hana
+from hlcore.integracoes import hana
+
+from app.modulos.relatorios import catalogo
 
 
 # ── Permissão: a pasta do relatório é o recurso ──────────────────────────────
@@ -30,17 +32,8 @@ def exigir_acesso(user: dict, rel_id: str) -> None:
 
 # ── Execução ────────────────────────────────────────────────────────────────
 
-def substituir_filtros(sql: str, filtros: dict) -> tuple[str, list]:
-    """Tira as linhas de comentário (--) e troca cada :nome por ? (parâmetro), na ordem em que aparecem.
-    Filtro não informado vale "" (as consultas tratam vazio como "todos")."""
-    params = []
-
-    def trocar(m):
-        params.append(filtros.get(m.group(1), ""))
-        return "?"
-
-    linhas = [linha for linha in sql.splitlines() if not linha.strip().startswith("--")]
-    return re.sub(r":([a-zA-Z_]+)", trocar, "\n".join(linhas)), params
+# Filtros :nome → parâmetros "?" (regra no hlcore; vazio = "")
+substituir_filtros = hana.parametros_nomeados
 
 
 def validar_datas(filtros: dict) -> None:

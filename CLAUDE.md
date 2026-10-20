@@ -38,7 +38,7 @@ siga-o; quando o código e o padrão divergirem, vale o padrão.
 ## Estrutura
 
 - `relatorios/` — os relatórios em si (SQL, config JSON, páginas de indicador). Ver `relatorios/README.md`.
-- `backend/app/modulos/relatorios/` — catálogo (arquivos), HANA, execução, páginas de indicador (iframe + passe),
+- `backend/app/modulos/relatorios/` — catálogo (arquivos), execução (HANA pelo `hlcore.integracoes.hana`), páginas de indicador (iframe + passe),
   administração dos arquivos (`arquivos.py`, `router_admin.py`).
 - `backend/app/modulos/email/` — e-mails agendados (definição em `relatorios/email/`, operação e histórico no banco,
   agendador no próprio app).

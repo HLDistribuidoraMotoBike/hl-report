@@ -47,7 +47,7 @@ from hlcore import auth  # noqa: E402
 from hlcore.configuracoes import decrypt  # noqa: E402
 from app.main import app  # noqa: E402
 from app.modulos.email import mailer, service  # noqa: E402
-from app.modulos.relatorios import hana  # noqa: E402
+from hlcore.integracoes import hana  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
 ok = 0

@@ -29,7 +29,7 @@ from hlcore.modelos import GrupoPermissao  # noqa: E402
 from app.permissoes import GRUPOS_INICIAIS, PERMISSOES  # noqa: E402
 from app.modulos import email, relatorios  # noqa: E402
 from app.modulos.email import mailer, service as email_service  # noqa: E402
-from app.modulos.relatorios import hana  # noqa: E402
+from hlcore.integracoes import hana  # noqa: E402
 
 # Toda a API fica em /api: o resto do endereço é tela do React
 API = "/api"
@@ -41,7 +41,7 @@ CONFIGURACOES = hana.CONFIGURACOES + mailer.CONFIGURACOES + [
 ]
 
 # versão: só aqui — o frontend lê este número na compilação (vite.config.js)
-app = FastAPI(title="HL Report", version="0.4.0")
+app = FastAPI(title="HL Report", version="0.5.0")
 erros.registrar_handlers(app)
 app.include_router(acesso.rotas(PERMISSOES), prefix=API)
 app.include_router(configuracoes.rotas(), prefix=API)

@@ -29,7 +29,7 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
   recolher, total geral), exportação Excel/CSV.
 - **Painel** (tela React do app, `config.componente`): definido só pelo config; consulta as fontes do
   `config.fontes` (subpasta `_nome` da mesma pasta, então a permissão é a da pasta). Hoje: Rentabilidade (seção 5).
-- **Indicador** (DRE, Simulador): a página própria em `relatorios/templates/`, aberta num iframe
+- **Indicador** (DRE): a página própria em `relatorios/templates/`, aberta num iframe
   dentro do menu. O endereço leva um passe de 12 h válido só para aquela página (só o HTML, sem dados); as chamadas
   da página a `/api` usam o login da tela.
 

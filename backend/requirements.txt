@@ -1,7 +1,7 @@
 # hlcore (peças comuns dos apps HL — repositório hl-core) NÃO vem do PyPI; instalar à parte:
 #   dev: pip install -e ..\..\hl-core\python
 #   VM:  pip install hlcore-<versão>-py3-none-any.whl   (ver docs/PUBLICACAO.md)
-# Versão exigida por esta versão do HL Report: hlcore 0.5.1
+# Versão exigida por esta versão do HL Report: hlcore 0.6.0
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 sqlalchemy==2.0.35
@@ -13,6 +13,6 @@ python-dotenv==1.0.1
 cryptography>=42.0.0
 alembic==1.13.3
 # SAP HANA (conexão direta), páginas de indicador e e-mail (Jinja), anexo .xlsx do e-mail (openpyxl)
-hdbcli==2.28.19
+hdbcli==2.28.19   # hlcore[hana]
 jinja2==3.1.4
 openpyxl==3.1.5

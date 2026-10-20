@@ -3,6 +3,13 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.5.0 — 20/10/2026 — Simulador sai para o HL Backoffice; HANA no hlcore
+
+- O **Simulador de Preço** (pasta Comercial) foi para o HL Backoffice 0.4.0 — é formulário e vai guardar orçamentos
+  (decisão do usuário). Saíram `sql/Comercial`, `config/Comercial` e `templates/Simulador.html`.
+- A conexão com o HANA saiu do app e foi para o **hlcore 0.6.0** (`hlcore.integracoes.hana`), compartilhada com o
+  Backoffice — mesmo comportamento.
+
 ### 0.4.0 — 20/10/2026 — Rentabilidade E-commerce na base nova
 
 Decisão do usuário: a visão **E-commerce** também passa para a `HL_RENTABILIDADE` (a mesma do Consolidado e do

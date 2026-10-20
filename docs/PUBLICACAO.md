@@ -40,7 +40,7 @@ DESLIGADO até a fase 2.
 9. Firewall da VM: liberar a porta **9001** (entrada, TCP) para a rede interna.
 10. `instalar-tarefa.ps1` como Administrador (o `start-service.bat` já vem com `PORTA=9001`).
 11. Conferir: `http://100.64.113.7:9001/api/health` (cabeçalho `X-App-Versao`), `logs\service.log`, login com
-    usuário de rede, abrir uma lista e cada indicador (DRE, Rentabilidade E-commerce/Consolidado, Simulador),
+    usuário de rede, abrir uma lista, a Rentabilidade (E-commerce/Consolidado) e a DRE,
     Configurações → E-mails agendados: **Prévia** e **Enviar teste** para você (faixa amarela = agendador desligado).
 12. Nos outros apps, Configurações → API → Atalhos: `APP_REPORT` = `http://100.64.113.7:9001` durante o teste.
 
@@ -60,6 +60,8 @@ DESLIGADO até a fase 2.
 
 ## Por versão
 
+- **0.5.0**: exige **hlcore 0.6.0** (wheel novo); `relatorios\` inteira (saiu a pasta Comercial — Simulador foi
+  para o HL Backoffice 0.4.0: publicar os dois juntos).
 - **0.4.0**: sem migração; `relatorios\` inteira de novo (`_rentabilidade\Ecommerce.sql` e `Consolidado.sql` viraram
   `Vendas.sql`).
 - **0.3.0**: sem migração. Em `relatorios\` saíram arquivos (páginas e configs antigos da Rentabilidade, 2 modelos sem

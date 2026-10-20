@@ -32,7 +32,9 @@ from jinja2 import Environment, FileSystemLoader
 from hlcore.configuracoes import get_config
 from hlcore.erros import ErroNegocio
 
-from app.modulos.relatorios import catalogo, hana, service as relatorios
+from hlcore.integracoes import hana
+
+from app.modulos.relatorios import catalogo, service as relatorios
 
 log = logging.getLogger("email")
 
