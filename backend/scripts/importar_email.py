@@ -20,6 +20,7 @@ import hlcore  # noqa: E402,F401  (lê o .env)
 
 os.environ.setdefault("DATABASE_URL", "sqlite:///./report.db")
 
+from hlcore import configuracoes  # noqa: E402
 from hlcore.configuracoes import encrypt  # noqa: E402
 from hlcore.database import SessionLocal  # noqa: E402
 from hlcore.modelos import Configuracao  # noqa: E402
@@ -36,6 +37,8 @@ def importar(arquivo: str, executar: bool) -> list[str]:
         antigo = json.load(f)
     defs = mailer.definicoes()
     linhas = []
+    if executar:
+        configuracoes.semear(mailer.CONFIGURACOES)   # instalação nova: o app ainda não subiu para criar as chaves SMTP_*
     db = SessionLocal()
     try:
         sincronizar(db)
