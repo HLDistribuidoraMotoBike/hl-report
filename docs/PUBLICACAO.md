@@ -60,6 +60,8 @@ DESLIGADO até a fase 2.
 
 ## Por versão
 
+- **0.6.0**: sem migração; `relatorios\` inteira (DRE.sql foi para `_dre\Saldos.sql`, saiu `templates\DRE.html`).
+  A pasta Diretoria continua liberada só para quem já tinha (Admin → Grupos).
 - **0.5.0**: exige **hlcore 0.6.0** (wheel novo); `relatorios\` inteira (saiu a pasta Comercial — Simulador foi
   para o HL Backoffice 0.4.0: publicar os dois juntos).
 - **0.4.0**: sem migração; `relatorios\` inteira de novo (`_rentabilidade\Ecommerce.sql` e `Consolidado.sql` viraram

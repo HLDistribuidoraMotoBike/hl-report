@@ -66,3 +66,18 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
   texto parcial. No Consolidado, o Atacado abre em Moto/Bike pelo setor do vendedor; filtro por canal na tela.
 - Margem = receita líquida com crédito ÷ valor anunciado. "Mkp médio" = média simples do markup das linhas.
 - Gráficos: 5 maiores por valor anunciado + "Outros". Produtos e Marcas: 50 primeiros (botão "Mostrar todos").
+
+## 6. DRE Diretoria (`Diretoria/DRE`, painel)
+
+- Modelo financeiro do SAP nº 12 (OFRC/FRC1 da PRD): linhas viram árvore, contas penduradas nas linhas; contas fora
+  do modelo não entram. Valor = Crédito − Débito (JDT1, data do lançamento). Linhas somam as filhas; fórmulas
+  (+/−) na ordem do modelo.
+- Empresas (combináveis, ao menos uma): **HL Distribuição** (filiais 1–4 da PRD), **Especial** (base SBO_MATRIZ
+  inteira, contas casadas pelo código), **Empresas de serviço** (filiais 6 e 7). Filial 5 da PRD fica fora sempre.
+  Configuração em `relatorios/config/Diretoria/DRE.json`.
+- Fora: lançamento estornado e o estorno dele (estorno automático entra); **encerramento do exercício** (tipo -3) —
+  salvo se a caixa "Excluir encerramento do exercício" for desmarcada.
+- Detalhe (clique no valor de uma conta): fornecedores/clientes (só parceiro cadastrado; o resto em "Sem fornecedor";
+  sem conta de contrapartida), até 500 na tela (a busca procura em todos); lançamentos com documento, filial,
+  histórico da linha e observação (até 2.000).
+- Exportar Excel (o que está na tela: meses, empresas, zeradas) e Imprimir/PDF.

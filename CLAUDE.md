@@ -45,7 +45,8 @@ siga-o; quando o código e o padrão divergirem, vale o padrão.
 - `frontend/src/modulos/relatorios/` — tela de lista (filtros, agrupamento, pivot, Excel) e o iframe dos indicadores.
 - `frontend/src/modulos/admin/` — Configurações → Relatórios, Templates e E-mails agendados.
 - `frontend/src/modulos/paineis/` — painéis (relatório tipo "painel" = tela React; registro em `index.js`). Hoje:
-  Rentabilidade (E-commerce/Consolidado). Os cálculos ficam num arquivo sem tela (`dados.js`).
+  Rentabilidade (E-commerce/Consolidado) e DRE Diretoria. Os cálculos ficam num arquivo sem tela (`dados.js`) —
+  mudança na conta da DRE: comparar antes/depois em vários períodos (a migração foi validada assim).
 - Toda a API em `/api`; `/api/executar/<Pasta>/<Nome>` mantém o formato do Report antigo (`{ok, erro}`).
 
 ## Idioma

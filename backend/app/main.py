@@ -41,7 +41,7 @@ CONFIGURACOES = hana.CONFIGURACOES + mailer.CONFIGURACOES + [
 ]
 
 # versão: só aqui — o frontend lê este número na compilação (vite.config.js)
-app = FastAPI(title="HL Report", version="0.5.0")
+app = FastAPI(title="HL Report", version="0.6.0")
 erros.registrar_handlers(app)
 app.include_router(acesso.rotas(PERMISSOES), prefix=API)
 app.include_router(configuracoes.rotas(), prefix=API)

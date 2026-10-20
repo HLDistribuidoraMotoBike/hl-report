@@ -24,6 +24,8 @@ SELECT "Data", "Lancamento", "TipoDoc", "Documento", "Filial", "NomeFilial", "Va
       AND T1."Account" = :conta
       AND IFNULL(T2."CardCode", '') = :parceiro
       AND T1."RefDate" BETWEEN :data_ini AND :data_fim
+  -- encerramento do exercício (OJDT.TransType -3, "Para o período de encerramento N"): fora, salvo :incluir_encerramento = 'S'
+  AND (:incluir_encerramento = 'S' OR T1."TransType" <> '-3')
       -- cancelados: o lançamento estornado e o estorno dele não entram (estorno automático entra)
       AND T1."TransId" NOT IN (
           SELECT E."TransId" FROM SBO_HLMOTOBIKE_PRD.OJDT E JOIN SBO_HLMOTOBIKE_PRD.OJDT O ON O."TransId" = E."StornoToTr" WHERE O."AutoStorno" = 'N'
@@ -49,6 +51,8 @@ SELECT "Data", "Lancamento", "TipoDoc", "Documento", "Filial", "NomeFilial", "Va
       AND T1."Account" = :conta
       AND IFNULL(T2."CardCode", '') = :parceiro
       AND T1."RefDate" BETWEEN :data_ini AND :data_fim
+  -- encerramento do exercício (OJDT.TransType -3, "Para o período de encerramento N"): fora, salvo :incluir_encerramento = 'S'
+  AND (:incluir_encerramento = 'S' OR T1."TransType" <> '-3')
       -- cancelados: o lançamento estornado e o estorno dele não entram (estorno automático entra)
       AND T1."TransId" NOT IN (
           SELECT E."TransId" FROM SBO_MATRIZ.OJDT E JOIN SBO_MATRIZ.OJDT O ON O."TransId" = E."StornoToTr" WHERE O."AutoStorno" = 'N'

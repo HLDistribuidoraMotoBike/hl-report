@@ -3,6 +3,22 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.6.0 — 20/10/2026 — DRE em React (etapa 3 concluída) + filtro de encerramento
+
+Decisões do usuário: migrar a DRE; trocar "Baixar HTML" por **Exportar Excel + Imprimir/PDF**; visual dos apps na tela
+com impressão caprichada; encerramento do exercício como filtro.
+- `Diretoria/DRE` virou painel React (`componente: "dre"`); mesmas consultas (a de saldos foi para `_dre/Saldos.sql`)
+  e a mesma conta, agora em `paineis/dre/dados.js`. **Conferido contra o DRE.html: 2.880 linhas comparadas (3
+  períodos × 5 combinações de empresas), zero diferença.**
+- Tudo da tela antiga: período (até 24 meses), meses e empresas combináveis, colunas por mês/total, variação,
+  ocultar zeradas, R$ ou % da receita, inteiro/milhares, busca, expandir/recolher, detalhe conta → fornecedores →
+  lançamentos. **Excel**: árvore com níveis agrupados (+/− do Excel) e aba de parâmetros. **Imprimir/PDF**: A4
+  paisagem, só o relatório.
+- **Encerramento do exercício** (lançamentos tipo -3 do SAP, "Para o período de encerramento N" — existem para
+  2020–2022): fora por padrão (caixa "Excluir encerramento do exercício"). Ex.: jul/22–fev/23 com o encerramento
+  dava receita líquida −R$ 5,5 mi; sem ele, R$ 16,3 mi. Vale também no detalhe.
+- Saiu o `DRE.html` (pasta `relatorios/templates` ficou vazia — o tipo "indicador" continua suportado).
+
 ### 0.5.0 — 20/10/2026 — Simulador sai para o HL Backoffice; HANA no hlcore
 
 - O **Simulador de Preço** (pasta Comercial) foi para o HL Backoffice 0.4.0 — é formulário e vai guardar orçamentos
@@ -72,4 +88,4 @@ hl-core, como HL Logística e HL Backoffice. Etapa 1 de 3:
 - Conexão HANA em Configurações → API → SAP HANA. hlcore 0.5.1. Cenários `app` e `relatorios`.
 
 Próximas etapas: (2) Admin do Report em React — feita na 0.2.0; (3) indicadores migrados para React, um a um —
-Rentabilidade na 0.3.0.
+Rentabilidade na 0.3.0, Simulador foi para o HL Backoffice (0.5.0), DRE na 0.6.0 — concluída.

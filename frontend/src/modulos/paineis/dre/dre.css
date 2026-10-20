@@ -1,0 +1,96 @@
+/* DRE Diretoria — sobre o estilo do kit @hl/ui; impressão em paisagem, só o relatório */
+.dre-pagina { min-width: 0; }
+.dre-topo { margin-bottom: 1rem; }
+.dre-neg { color: #c0392b; }
+.dre-pos { color: #0a8f5a; }
+.dre-mudo { color: var(--text-muted); font-size: .8rem; }
+.dre-aviso { color: #b7790f; font-size: .82rem; }
+
+.dre-gerar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: flex-end; }
+.dre-filtro { display: flex; flex-direction: column; min-width: 150px; }
+.dre-filtro .form-label { margin-bottom: .3rem; }
+.dre-check { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; padding-bottom: .6rem; cursor: pointer; }
+
+.dre-kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .8rem; margin-bottom: 1rem; }
+.dre-kpi { margin-bottom: 0; padding: .9rem 1rem; border-top: 3px solid var(--primary); }
+.dre-kpi-rotulo { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); font-weight: 600; }
+.dre-kpi-valor { font-size: 1.35rem; font-weight: 700; color: var(--primary); margin: .3rem 0 .15rem; font-variant-numeric: tabular-nums; }
+.dre-kpi-valor.dre-neg { color: #c0392b; }
+.dre-kpi-sub { font-size: .75rem; color: var(--text-muted); }
+
+.dre-barra { display: flex; flex-wrap: wrap; gap: 1rem 1.4rem; align-items: flex-end; }
+.dre-bloco { display: flex; flex-direction: column; gap: .3rem; }
+.dre-bloco-tit { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 600; }
+.dre-pills { display: flex; flex-wrap: wrap; gap: .3rem; }
+.dre-pill { border: 1.5px solid var(--border); background: #fff; border-radius: 14px; padding: .2rem .6rem; font-size: .78rem; cursor: pointer; }
+.dre-pill.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.dre-empresa { display: inline-flex; align-items: center; gap: .35rem; border: 1.5px solid var(--border); border-radius: 8px; padding: .3rem .6rem;
+  font-size: .8rem; cursor: pointer; background: #fff; }
+.dre-empresa.on { border-color: var(--primary); background: #f3f5fb; }
+.dre-empresa small { color: var(--text-muted); }
+.dre-seg { display: inline-flex; border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.dre-seg button { border: 0; background: #fff; padding: .4rem .7rem; font-size: .8rem; cursor: pointer; }
+.dre-seg button + button { border-left: 1.5px solid var(--border); }
+.dre-seg button.on { background: var(--primary); color: #fff; }
+.dre-busca { min-width: 240px; padding: .4rem .65rem; font-size: .82rem; }
+.dre-acoes { display: flex; flex-wrap: wrap; gap: .4rem; margin-left: auto; }
+
+/* Tabela */
+.dre-tabela-wrap { padding: 0; overflow: auto; max-height: calc(100vh - 210px); }
+.dre-tabela { font-size: .82rem; border-collapse: separate; border-spacing: 0; }
+.dre-tabela thead th { position: sticky; top: 0; z-index: 3; text-align: right; white-space: nowrap; font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
+.dre-tabela td { padding: .38rem .7rem; border-bottom: 1px solid #eef1f4; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dre-tabela .dre-col-conta { position: sticky; left: 0; z-index: 2; background: var(--card-bg); text-align: left; min-width: 340px; white-space: normal; }
+.dre-tabela thead .dre-col-conta { z-index: 4; background: var(--primary); }
+.dre-tabela .dre-col-total { background: #f6f7fb; font-weight: 600; }
+.dre-tabela thead .dre-col-total { background: #2b2b48; }
+.dre-col-var { font-size: .75rem; }
+.dre-grupo td { font-weight: 600; background: #fafbfd; }
+.dre-grupo td.dre-col-conta { background: #fafbfd; }
+.dre-resultado td { font-weight: 700; background: #eef1f8; border-top: 1px solid #d5dbe7; color: var(--primary); }
+.dre-resultado td.dre-col-conta { background: #eef1f8; text-transform: uppercase; font-size: .78rem; letter-spacing: .03em; }
+.dre-resultado td.dre-neg { color: #c0392b; }
+.dre-conta td { color: #2c3e50; }
+.dre-clicavel { cursor: pointer; }
+.dre-clicavel:hover { background: #fff6cc !important; text-decoration: underline dotted; }
+.dre-alterna { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.dre-chev { display: inline-block; width: 14px; transition: transform .15s; color: var(--text-muted); }
+.dre-chev.fechado { transform: rotate(-90deg); }
+mark { background: #ffe58f; padding: 0 1px; }
+.dre-rodape { font-size: .75rem; color: var(--text-muted); margin-top: .6rem; }
+
+/* Detalhe */
+.dre-modal-fundo { position: fixed; inset: 0; background: rgba(15, 18, 30, .45); z-index: 200; display: flex; align-items: flex-start;
+  justify-content: center; padding: 4vh 1rem; overflow: auto; }
+.dre-modal { background: #fff; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.25); width: 100%; max-width: 1150px; display: flex;
+  flex-direction: column; max-height: 92vh; }
+.dre-modal-topo { display: flex; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.3rem .6rem; }
+.dre-modal-topo h3 { color: var(--primary); font-size: 1.1rem; margin: .1rem 0; }
+.dre-modal-total { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: .25rem; }
+.dre-modal-total > div:nth-child(2) { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.dre-modal-barra { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: .5rem 1.3rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.dre-modal-corpo { overflow: auto; padding: .6rem 1.3rem 1.2rem; }
+.dre-det { font-size: .82rem; }
+.dre-det .n, .dre-lanc .n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dre-det td { padding: .4rem .6rem; border-bottom: 1px solid #eef1f4; }
+.dre-det-parc { cursor: pointer; }
+.dre-det-parc:hover td, .dre-det-parc.aberto td { background: #f5f7fc; }
+.dre-tag { margin-left: .5rem; font-size: .7rem; color: var(--text-muted); background: #f0f2f6; border-radius: 6px; padding: .05rem .4rem; }
+.dre-barrinha { display: inline-block; height: 6px; background: var(--primary); opacity: .35; border-radius: 3px; margin-right: .4rem; vertical-align: middle; }
+.dre-det-lanc > td { background: #fafbfd; padding: .4rem .6rem .8rem 2rem !important; }
+.dre-lanc { font-size: .76rem; background: #fff; }
+.dre-lanc thead th { position: static; background: #e9ecf4; color: var(--text-muted); font-size: .68rem; }
+.dre-lanc td { padding: .3rem .5rem; border-bottom: 1px solid #eef1f4; vertical-align: top; }
+
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  .sidebar, .mobile-topbar, .version-badge, .no-print, .aviso-nova-versao { display: none !important; }
+  .content-area { margin: 0 !important; padding: 0 !important; }
+  .dre-tabela-wrap { max-height: none; overflow: visible; box-shadow: none; }
+  .dre-tabela { font-size: 9pt; width: 100%; }
+  .dre-tabela .dre-col-conta { position: static; min-width: 0; }
+  .dre-tabela thead th { position: static; }
+  .dre-kpi { box-shadow: none; border: 1px solid #d5dbe7; }
+  .dre-tabela tr { break-inside: avoid; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
