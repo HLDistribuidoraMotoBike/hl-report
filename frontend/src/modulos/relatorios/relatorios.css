@@ -1,0 +1,103 @@
+/* Telas de relatório (lista e indicador) — sobre o estilo do kit @hl/ui */
+
+.rl-pagina { min-width: 0; }
+.rl-topo { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.rl-topo .page-title { flex: 1; min-width: 200px; }
+
+.rl-badge {
+  font-size: .72rem; padding: .2rem .6rem; border-radius: 20px; font-weight: 600;
+  background: #eaf2ff; color: #2d6cdf; border: 1px solid #cfe0ff;
+}
+.rl-badge--pivot { background: #fff4e0; color: #b7790f; border-color: #fbe2b4; }
+.rl-badge--agrupado { background: #e8faf5; color: #00a383; border-color: #bdeee2; }
+
+/* Filtros */
+.rl-filtros { display: flex; flex-wrap: wrap; gap: .9rem; align-items: flex-end; }
+.rl-filtro { display: flex; flex-direction: column; min-width: 160px; flex: 1; }
+.rl-filtro .form-label { margin-bottom: .3rem; }
+.rl-filtros-acoes { display: flex; gap: .5rem; }
+
+.rl-estado { text-align: center; padding: 3.5rem 1rem; color: var(--text-muted); font-size: 2rem; }
+.rl-estado > div { font-size: .9rem; margin-top: .6rem; }
+.rl-estado .spinner { margin: 0 auto; }
+
+/* Barra acima da tabela */
+.rl-barra { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.rl-busca { max-width: 320px; padding: .45rem .75rem; font-size: .85rem; }
+.rl-barra-acoes { display: flex; gap: .4rem; margin-left: auto; flex-wrap: wrap; }
+
+/* Tabela */
+.rl-tabela-wrap {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: auto; max-height: calc(100vh - 320px); min-height: 200px;
+}
+.rl-tabela { font-size: .82rem; }
+.rl-tabela thead th { position: sticky; top: 0; z-index: 10; padding: 0; vertical-align: top; }
+.rl-th-titulo {
+  display: flex; align-items: center; gap: .3rem; padding: .55rem .7rem .35rem; cursor: pointer; user-select: none;
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .04em;
+}
+.rl-th-titulo:hover, .rl-th-titulo--ativo { color: #ffd1da; }
+.rl-sort { font-size: .7rem; opacity: .6; }
+.rl-th-filtro {
+  display: block; margin: 0 .45rem .45rem; width: calc(100% - .9rem); min-width: 60px;
+  font-size: .72rem; padding: .2rem .45rem; border: 1px solid rgba(255,255,255,.25); border-radius: 4px;
+  background: rgba(255,255,255,.12); color: #fff;
+}
+.rl-th-filtro::placeholder { color: rgba(255,255,255,.55); }
+.rl-th-filtro:focus { outline: none; background: #fff; color: var(--text); }
+
+.rl-tabela tbody td { padding: .45rem .7rem; white-space: nowrap; border-bottom: 1px solid #eef1f4; }
+.rl-tabela tbody tr:hover td { background: #f7f9fc; }
+.rl-num { text-align: right; font-variant-numeric: tabular-nums; }
+.rl-vazio { color: var(--text-muted); text-align: center; }
+
+/* Colunas congeladas (config.colunas_congeladas) */
+.rl-tabela th.rl-congelada { z-index: 12; }
+.rl-tabela td.rl-congelada { position: sticky; background: var(--card-bg); z-index: 2; }
+.rl-congelada-ultima { box-shadow: 3px 0 6px rgba(0,0,0,.08); }
+
+/* Pivot (config.modo = "pivot") */
+.rl-tr-grupo th { padding: .45rem .7rem !important; font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; z-index: 12; }
+.rl-tabela thead tr.rl-tr-grupo th { background: #10101f; }
+.rl-tabela th.rl-grupo-mes { text-align: center; color: #9fd9ff; border-left: 1px solid rgba(255,255,255,.15); }
+.rl-th-mes { border-left: 1px solid rgba(255,255,255,.15); }
+.rl-mes { border-left: 1px solid #eef1f4; }
+
+/* Totais (pivot e agrupado) */
+.rl-tr-total td {
+  position: sticky; bottom: 0; background: #f0f2f8; border-top: 2px solid var(--border);
+  font-weight: 700; padding: .5rem .7rem; white-space: nowrap; color: var(--primary);
+}
+
+/* Agrupamento (config.agrupamento) */
+.rl-tr-agrup { cursor: pointer; }
+.rl-tr-agrup td { font-weight: 600; }
+.rl-tabela tbody tr.rl-n0 td { background: #f3f5fa; }
+.rl-tabela tbody tr.rl-tr-agrup:hover td { background: #e8faf5; }
+.rl-grp { white-space: nowrap; }
+.rl-grp-toggle {
+  display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin-right: .5rem;
+  border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--primary); font-size: .8rem;
+  vertical-align: middle;
+}
+.rl-grp-sub { color: var(--text-muted); font-weight: 400; margin-left: .4rem; font-size: .75rem; }
+
+/* Paginação */
+.rl-paginacao { display: flex; align-items: center; justify-content: space-between; padding: .7rem .2rem; flex-wrap: wrap; gap: .6rem; font-size: .8rem; }
+.rl-pag-btns { display: flex; gap: .25rem; }
+.rl-pag {
+  min-width: 30px; height: 30px; border: 1px solid var(--border); background: #fff; border-radius: 6px;
+  cursor: pointer; font-size: .78rem; color: var(--text);
+}
+.rl-pag:hover:not(:disabled) { border-color: var(--primary); }
+.rl-pag--ativa { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }
+.rl-pag:disabled { opacity: .35; cursor: default; }
+
+/* Indicador: a página própria ocupa a área de conteúdo inteira */
+.rl-indicador {
+  display: block; width: calc(100% + 3rem); height: 100vh; margin: -1.5rem; border: 0; background: #fff;
+}
+@media (max-width: 768px) {
+  .rl-indicador { width: calc(100% + 2rem); margin: -1rem; height: calc(100vh - 52px); }
+}

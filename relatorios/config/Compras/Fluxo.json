@@ -1,0 +1,59 @@
+﻿{
+    "tipo": "lista",
+    "modo": "pivot",
+    "titulo": "Fluxo de Produtos — HL + DHFS",
+    "colunas_congeladas": 2,
+    "colunas_fixas": [
+        "CODIGO","DESCRICAO","MARCA","FABRICANTE","FAMILIA","COD. FABRICANTE",
+        "APLICACAO","STATUS","LIB. COMPRA","QTD CAIXA","VLR VENDA","VALOR FOB",
+        "VLR STD","VLR STD S/ST","CST MEDIO MATRIZ","CST MEDIO FILIAL",
+        "SALD. FULL","SALD. COMPRA","ESTOQUE","RESERVA VENDA","DISPONIVEL",
+        "ULTIMA COMPRA","QTD ULT. COMPRA"
+    ],
+    "colunas_mes_label": [
+        "MES_0_LABEL","MES_1_LABEL","MES_2_LABEL","MES_3_LABEL",
+        "MES_4_LABEL","MES_5_LABEL","MES_6_LABEL","MES_7_LABEL",
+        "MES_8_LABEL","MES_9_LABEL","MES_10_LABEL","MES_11_LABEL","MES_12_LABEL"
+    ],
+    "colunas_mes_qtd": [
+        "QTD_M0","QTD_M1","QTD_M2","QTD_M3","QTD_M4","QTD_M5",
+        "QTD_M6","QTD_M7","QTD_M8","QTD_M9","QTD_M10","QTD_M11","QTD_M12"
+    ],
+    "filtros": [
+        {
+            "id": "filial",
+            "label": "Filial",
+            "tipo": "select",
+            "opcoes": [
+                {"value": "",     "label": "Todas"},
+                {"value": "HL",   "label": "HL Moto"},
+                {"value": "DHFS", "label": "DHFS"}
+            ]
+        },
+        {
+            "id": "validFor",
+            "label": "Status",
+            "tipo": "select",
+            "opcoes": [
+                {"value": "",  "label": "Todos"},
+                {"value": "Y", "label": "Ativo"},
+                {"value": "N", "label": "Inativo"}
+            ]
+        },
+        {
+            "id": "lib_compra",
+            "label": "Lib. Compra",
+            "tipo": "select",
+            "opcoes": [
+                {"value": "",  "label": "Todos"},
+                {"value": "N", "label": "Ativo"},
+                {"value": "Y", "label": "Inativo"}
+            ]
+        },
+        {
+            "id": "marca",
+            "label": "Marca",
+            "tipo": "text"
+        }
+    ]
+}

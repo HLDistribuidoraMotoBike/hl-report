@@ -1,0 +1,4 @@
+# Só para desenvolvimento (testes). A VM usa apenas requirements.txt.
+-r requirements.txt
+pytest
+ruff

@@ -1,0 +1,16 @@
+{
+  "titulo": "Prazo Médio de Recebimento e Pagamento",
+  "tipo": "lista",
+  "filtros": [
+    {
+      "id": "data_ini",
+      "label": "Data Inicial (baixa)",
+      "tipo": "date"
+    },
+    {
+      "id": "data_fim",
+      "label": "Data Final (baixa)",
+      "tipo": "date"
+    }
+  ]
+}

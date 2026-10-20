@@ -1,0 +1,17 @@
+{
+  "titulo": "Rentabilidade Consolidado",
+  "tipo": "indicador",
+  "filtros": [
+    {
+      "id": "dataIni",
+      "label": "Data Inicial",
+      "tipo": "date"
+    },
+    {
+      "id": "dataFim",
+      "label": "Data Final",
+      "tipo": "date"
+    }
+  ],
+  "template": "RentabilidadeConsolidado.html"
+}

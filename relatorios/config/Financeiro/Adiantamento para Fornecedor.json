@@ -1,0 +1,26 @@
+{
+  "titulo": "Adiantamento para Fornecedor",
+  "tipo": "lista",
+  "filtros": [
+    {
+      "id": "DocDateINI",
+      "label": "Data Inicial",
+      "tipo": "date"
+    },
+    {
+      "id": "DocDateFIM",
+      "label": "Data Final",
+      "tipo": "date"
+    },
+    {
+      "id": "validFor",
+      "label": "Codigo Fornecedor",
+      "tipo": "text"
+    },
+    {
+      "id": "stat",
+      "label": "Stats",
+      "tipo": "text"
+    }
+  ]
+}

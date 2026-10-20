@@ -1,0 +1,72 @@
+{#
+  ╔══════════════════════════════════════════════════════════╗
+  ║  TEMA CENTRAL — REPORT.SYS                              ║
+  ║  Edite este arquivo para alterar fontes e cores         ║
+  ║  de toda a aplicação de uma só vez.                     ║
+  ╚══════════════════════════════════════════════════════════╝
+
+  FONTES
+  ──────
+  --font-title   : Títulos, headers, nomes de categorias
+  --font-body    : Corpo do texto, parágrafos, labels
+  --font-mono    : Dados, tabelas, valores numéricos, código
+
+  CORES — FUNDO
+  ─────────────
+  --bg           : Fundo principal da página
+  --surface      : Fundo de painéis e header
+  --card         : Fundo dos cards e painéis internos
+  --border       : Cor das bordas
+
+  CORES — TEXTO
+  ─────────────
+  --text         : Texto principal
+  --muted        : Texto secundário / placeholder
+
+  CORES — DESTAQUE
+  ────────────────
+  --accent       : Cor primária (verde-teal)
+  --accent2      : Cor secundária (azul)
+  --danger       : Erros e alertas
+
+  TAMANHOS DE FONTE
+  ─────────────────
+  --text-xs      : 11px  — labels, tags, legendas
+  --text-sm      : 13px  — corpo padrão, tabelas
+  --text-md      : 15px  — subtítulos
+  --text-lg      : 20px  — títulos de seção
+  --text-xl      : 28px  — títulos de página
+#}
+
+<style id="tema-global">
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    /* ── FONTES ─────────────────────────────────── */
+    --font-title : 'Plus Jakarta Sans', sans-serif;
+    --font-body  : 'Inter', sans-serif;
+    --font-mono  : 'JetBrains Mono', monospace;
+
+    /* ── FUNDO ──────────────────────────────────── */
+    --bg         : #0d0f12;
+    --surface    : #13161b;
+    --card       : #161a22;
+    --border     : #1f2530;
+
+    /* ── TEXTO ──────────────────────────────────── */
+    --text       : #e8eaf0;
+    --muted      : #5a6478;
+
+    /* ── DESTAQUES ──────────────────────────────── */
+    --accent     : #00d4aa;
+    --accent2    : #0099ff;
+    --danger     : #ff4757;
+
+    /* ── TAMANHOS ───────────────────────────────── */
+    --text-xs    : 11px;
+    --text-sm    : 13px;
+    --text-md    : 15px;
+    --text-lg    : 20px;
+    --text-xl    : 28px;
+  }
+</style>

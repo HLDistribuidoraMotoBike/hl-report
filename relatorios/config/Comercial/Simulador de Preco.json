@@ -1,0 +1,6 @@
+{
+  "titulo": "Simulador de Preço",
+  "tipo": "indicador",
+  "template": "Simulador.html",
+  "filtros": []
+}

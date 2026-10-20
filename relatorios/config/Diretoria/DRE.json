@@ -1,0 +1,23 @@
+{
+  "titulo": "DRE Diretoria",
+  "tipo": "indicador",
+  "template": "DRE.html",
+  "filtros": [],
+  "modelo": 12,
+  "empresa": "SBO_HLMOTOBIKE_PRD + SBO_MATRIZ",
+  "max_meses": 24,
+  "limite_lancamentos": 2000,
+  "filiais_ocultas": [5],
+  "grupo_base": {"chave": "base", "rotulo": "HL Distribuição", "detalhe": "filiais 1 a 4"},
+  "grupos": [
+    {"chave": "esp", "rotulo": "Especial", "detalhe": "base SBO_MATRIZ", "origem": "MATRIZ", "filiais": []},
+    {"chave": "serv", "rotulo": "Empresas de serviço", "detalhe": "filiais 6 e 7 · 2RS", "filiais": [6, 7]}
+  ],
+  "linhas_chave": {
+    "receita_liquida": 12,
+    "lucro_bruto": 15,
+    "lucro_operacional": 17,
+    "resultado_financeiro": 18,
+    "lucro_liquido": 21
+  }
+}

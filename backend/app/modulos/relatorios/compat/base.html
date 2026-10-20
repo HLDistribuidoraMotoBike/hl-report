@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{# Base do Report antigo para páginas de indicador que usam {% extends "base.html" %} — sem o cabeçalho
+   (login, Admin e Sair agora são do menu do app). #}
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Relatórios{% endblock %}</title>
+
+    <!-- ── TEMA CENTRAL (fontes + cores + tamanhos) ── -->
+    {% include "tema.html" %}
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background : var(--bg);
+            color      : var(--text);
+            font-family: var(--font-body);
+            font-size  : var(--text-sm);
+            min-height : 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            display        : flex;
+            align-items    : center;
+            justify-content: space-between;
+            padding        : 18px 36px;
+            border-bottom  : 1px solid var(--border);
+            background     : var(--surface);
+            position       : sticky;
+            top: 0; z-index: 100;
+        }
+
+        .logo {
+            font-family    : var(--font-title);
+            font-weight    : 800;
+            font-size      : 17px;
+            letter-spacing : 0.04em;
+            color          : var(--text);
+            text-decoration: none;
+            display        : flex;
+            align-items    : center;
+            gap            : 10px;
+        }
+
+        .logo-dot {
+            width        : 8px;
+            height       : 8px;
+            border-radius: 50%;
+            background   : var(--accent);
+            box-shadow   : 0 0 10px var(--accent);
+        }
+
+        .header-tag {
+            font-size     : var(--text-xs);
+            color         : var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family   : var(--font-body);
+        }
+
+        /* ── MAIN ── */
+        main {
+            max-width: 1400px;
+            margin   : 0 auto;
+            padding  : 40px 36px;
+        }
+
+        /* ── BOTÕES ── */
+        .btn {
+            display    : inline-flex;
+            align-items: center;
+            gap        : 7px;
+            padding    : 9px 18px;
+            border-radius: 6px;
+            border     : 1px solid var(--border);
+            background : var(--surface);
+            color      : var(--text);
+            font-family: var(--font-body);
+            font-size  : var(--text-xs);
+            font-weight: 500;
+            cursor     : pointer;
+            text-decoration: none;
+            transition : all .15s;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .btn-primary {
+            background  : var(--accent);
+            border-color: var(--accent);
+            color       : #000;
+            font-weight : 600;
+        }
+        .btn-primary:hover {
+            background  : #00f0c0;
+            border-color: #00f0c0;
+            color       : #000;
+        }
+
+        /* ── INPUTS ── */
+        input, select {
+            background : var(--surface);
+            border     : 1px solid var(--border);
+            color      : var(--text);
+            font-family: var(--font-body);
+            font-size  : var(--text-sm);
+            padding    : 8px 12px;
+            border-radius: 6px;
+            outline    : none;
+            transition : border-color .15s;
+            width      : 100%;
+        }
+        input:focus, select:focus { border-color: var(--accent); }
+        input::placeholder        { color: var(--muted); }
+
+        label {
+            display       : block;
+            font-size     : var(--text-xs);
+            color         : var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom : 6px;
+            font-weight   : 500;
+        }
+
+        /* ── BADGES ── */
+        .badge {
+            display    : inline-flex;
+            align-items: center;
+            gap        : 5px;
+            padding    : 3px 10px;
+            border-radius: 20px;
+            font-size  : var(--text-xs);
+            font-weight: 500;
+        }
+        .badge-ok   { background: rgba(0,212,170,.12); color: var(--accent); }
+        .badge-err  { background: rgba(255,71,87,.12);  color: var(--danger); }
+        .badge-info { background: rgba(0,153,255,.12);  color: var(--accent2); }
+    </style>
+
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

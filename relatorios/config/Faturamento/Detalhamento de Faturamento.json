@@ -1,0 +1,16 @@
+{
+  "titulo": "Detalhamento de Faturamento",
+  "tipo": "lista",
+  "filtros": [
+    {
+      "id": "DataInicio",
+      "label": "Data Inicial",
+      "tipo": "date"
+    },
+    {
+      "id": "DataFim",
+      "label": "Data Final",
+      "tipo": "date"
+    }
+  ]
+}

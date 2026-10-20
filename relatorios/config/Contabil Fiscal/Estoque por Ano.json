@@ -1,0 +1,11 @@
+{
+  "titulo": "Estoque por Ano",
+  "tipo": "lista",
+  "filtros": [
+    {
+      "id": "ano",
+      "label": "Data Inicio",
+      "tipo": "number"
+    }
+  ]
+}

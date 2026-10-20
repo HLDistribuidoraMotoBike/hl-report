@@ -1,0 +1,13 @@
+# Finais de linha: no repositório tudo em LF; scripts do Windows sempre em CRLF.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.xml text eol=crlf
+
+# binários
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary
+*.xlsx binary
+*.db binary

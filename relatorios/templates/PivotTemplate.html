@@ -1,0 +1,539 @@
+{% extends "base.html" %}
+{% block title %}{{ config.titulo or nome }}{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .topbar { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+    .page-title { font-family:var(--font-title); font-size:var(--text-xl); font-weight:800; flex:1; }
+    .badge-tipo {
+        font-size:var(--text-xs); padding:3px 10px; border-radius:20px;
+        background:rgba(255,165,0,.12); color:#ffaa00;
+        border:1px solid rgba(255,165,0,.2); font-weight:500;
+    }
+
+    /* ── FILTROS ── */
+    .filtros-panel { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px 24px; margin-bottom:24px; }
+    .filtros-label { font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:14px; font-weight:600; }
+    .filtros-grid  { display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; }
+    .filtro-group  { display:flex; flex-direction:column; min-width:160px; flex:1; }
+    .filtros-actions { display:flex; gap:8px; align-items:flex-end; }
+
+    /* ── BARRA DE RESULTADO ── */
+    .resultado-header {
+        display:flex; align-items:center; justify-content:space-between;
+        margin-bottom:12px; flex-wrap:wrap; gap:10px;
+    }
+    .resultado-info { font-size:var(--text-sm); color:var(--muted); }
+    .resultado-info strong { color:var(--accent); }
+    .search-wrap { position:relative; }
+    .search-wrap input { padding-left:30px; max-width:280px; }
+    .search-icon { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:12px; pointer-events:none; }
+    .export-btns { display:flex; gap:8px; }
+    .btn-export { font-size:var(--text-xs); padding:7px 13px; background:transparent; border:1px solid var(--border); color:var(--muted); border-radius:6px; cursor:pointer; transition:all .15s; font-family:var(--font-body); }
+    .btn-export:hover { border-color:var(--accent2); color:var(--accent2); }
+
+    /* ── TABELA PIVOT ── */
+    .table-wrap { border:1px solid var(--border); border-radius:10px; overflow:auto; max-height:620px; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+
+    /* Cabeçalho duplo */
+    thead tr.tr-grupo th {
+        background: #0f1318;
+        padding: 8px 12px;
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing:.08em;
+        color: var(--muted);
+        border-bottom: 1px solid var(--border);
+        font-family: var(--font-body);
+        font-weight: 700;
+        position: sticky; top:0; z-index:12;
+        white-space: nowrap;
+    }
+    thead tr.tr-grupo th.grupo-mes {
+        background: #0d1520;
+        color: var(--accent2);
+        border-left: 1px solid var(--border);
+    }
+    thead tr.tr-col th {
+        background: var(--surface);
+        padding: 8px 10px 6px;
+        position: sticky; top: 37px; z-index: 11;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+    .th-title {
+        display:flex; align-items:center; gap:4px;
+        font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.05em;
+        color:var(--muted); cursor:pointer; user-select:none;
+        font-family:var(--font-body); font-weight:600;
+        transition: color .15s;
+    }
+    .th-title:hover { color:var(--accent); }
+    .sort-icon { font-size:10px; color:var(--border); }
+    .th-filter input {
+        margin-top:5px; width:100%;
+        font-size:11px; padding:3px 7px;
+        background:var(--bg); border-color:var(--border);
+        border-radius:4px; height:24px;
+    }
+    .th-filter input:focus { border-color:var(--accent); }
+
+    /* Células */
+    tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+    tbody tr:hover { background:rgba(255,255,255,.025); }
+    tbody td { padding:8px 10px; color:var(--text); white-space:nowrap; font-family:var(--font-body); }
+    td.num { text-align:right; font-family:var(--font-mono); font-size:12px; }
+    td.muted { color:var(--muted); text-align:center; }
+
+    /* Células de mês com heatmap */
+    td.mes {
+        text-align:right;
+        font-family:var(--font-mono);
+        font-size:12px;
+        border-left: 1px solid var(--border);
+        transition: background .15s;
+    }
+    td.mes-zero { color:var(--muted); }
+
+    /* Linha de totais */
+    tr.tr-total td {
+        background: #0f1318;
+        border-top: 2px solid var(--border);
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 12px;
+        color: var(--accent);
+        position: sticky; bottom:0;
+    }
+    tr.tr-total td.label-total {
+        font-family: var(--font-body);
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing:.08em;
+        color: var(--muted);
+    }
+
+    /* Paginação */
+    .paginacao { display:flex; align-items:center; justify-content:space-between; padding:12px 4px; flex-wrap:wrap; gap:10px; }
+    .pag-info  { font-size:var(--text-xs); color:var(--muted); }
+    .pag-btns  { display:flex; gap:4px; }
+    .pag-btn   { min-width:32px; height:32px; border:1px solid var(--border); background:var(--surface); color:var(--muted); border-radius:6px; cursor:pointer; font-size:var(--text-xs); font-family:var(--font-body); transition:all .15s; }
+    .pag-btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+    .pag-btn.active { background:var(--accent); border-color:var(--accent); color:#000; font-weight:700; }
+    .pag-btn:disabled { opacity:.3; cursor:default; }
+
+    /* Estados */
+    .estado { text-align:center; padding:60px 20px; color:var(--muted); }
+    .estado-icon { font-size:40px; margin-bottom:12px; }
+    .spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 12px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .erro-box { background:rgba(255,71,87,.08); border:1px solid rgba(255,71,87,.3); border-radius:8px; padding:16px 20px; color:var(--danger); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="topbar">
+    <a href="/" class="btn">← Voltar</a>
+    <h1 class="page-title">{{ config.titulo or nome }}</h1>
+    <span class="badge-tipo">⚡ Pivot</span>
+    <span class="badge badge-info" id="status-badge" style="display:none"></span>
+</div>
+
+<!-- Filtros -->
+<div class="filtros-panel">
+    <div class="filtros-label">⚙ Filtros</div>
+    <div class="filtros-grid" id="filtros-container"></div>
+</div>
+
+<!-- Resultado -->
+<div id="resultado" style="display:none">
+    <div class="resultado-header">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="busca-global" placeholder="Buscar..." oninput="aplicarFiltros()" />
+            </div>
+            <span class="resultado-info" id="resultado-info"></span>
+        </div>
+        <div class="export-btns">
+            <button class="btn-export" onclick="exportarExcel()">↓ Excel</button>
+            <button class="btn-export" onclick="exportarCSV()">↓ CSV</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead id="thead"></thead>
+            <tbody id="tbody"></tbody>
+            <tfoot id="tfoot"></tfoot>
+        </table>
+    </div>
+
+    <div class="paginacao">
+        <span class="pag-info" id="pag-info"></span>
+        <div class="pag-btns" id="pag-btns"></div>
+    </div>
+</div>
+
+<!-- Estado -->
+<div id="estado-area">
+    <div class="estado">
+        <div class="estado-icon">⚡</div>
+        <div>Configure os filtros e clique em <strong>Executar</strong></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const REL_ID       = {{ rel_id | tojson }};
+const CONFIG       = {{ config | tojson }};
+const FILTROS_DEF  = CONFIG.filtros || [];
+const COLS_FIXAS   = CONFIG.colunas_fixas   || [];
+const COLS_MES_LBL = CONFIG.colunas_mes_label || [];
+const COLS_MES_QTD = CONFIG.colunas_mes_qtd   || [];
+const POR_PAGINA   = 100;
+
+let dadosOriginais = [];
+let dadosFiltrados = [];
+let mesesLabels    = [];   // ["2026-04", "2026-03", ...]
+let sortCol = -1, sortAsc = true;
+let pagAtual = 1;
+let colFiltros = {};
+
+// ── Renderiza filtros ──
+(function() {
+    const c = document.getElementById('filtros-container');
+    FILTROS_DEF.forEach(f => {
+        const g = document.createElement('div'); g.className = 'filtro-group';
+        const l = document.createElement('label'); l.textContent = f.label; g.appendChild(l);
+        let inp;
+        if (f.tipo === 'select') {
+            inp = document.createElement('select');
+            (f.opcoes||[]).forEach(op => {
+                const o = document.createElement('option');
+                o.value = op.value ?? op; o.textContent = op.label ?? op;
+                inp.appendChild(o);
+            });
+        } else if (f.tipo === 'date') {
+            inp = document.createElement('input'); inp.type = 'date';
+            const hoje = new Date();
+            if (f.id==='data_ini') inp.value = new Date(hoje.getFullYear(),hoje.getMonth(),1).toISOString().slice(0,10);
+            if (f.id==='data_fim') inp.value = hoje.toISOString().slice(0,10);
+        } else {
+            inp = document.createElement('input');
+            inp.type = f.tipo === 'number' ? 'number' : 'text';
+            inp.placeholder = f.placeholder || 'Todos';
+        }
+        inp.id = 'f_' + f.id;
+        inp.addEventListener('keydown', e => { if(e.key==='Enter') executar(); });
+        g.appendChild(inp); c.appendChild(g);
+    });
+    const a = document.createElement('div'); a.className='filtros-actions';
+    a.innerHTML=`<button class="btn btn-primary" id="btn-exec" onclick="executar()">▶ Executar</button>
+                 <button class="btn" onclick="limpar()">✕ Limpar</button>`;
+    c.appendChild(a);
+})();
+
+// ── Executar ──
+async function executar() {
+    const filtros = {};
+    FILTROS_DEF.forEach(f => { const el=document.getElementById('f_'+f.id); if(el) filtros[f.id]=el.value||''; });
+    const params = new URLSearchParams(filtros);
+    setEstado('loading');
+    document.getElementById('btn-exec').disabled = true;
+
+    try {
+        const res  = await fetch(`/api/executar/${encodeURIComponent(REL_ID)}?${params}`);
+        const json = await res.json();
+        if (!json.ok) { setEstado('erro', json.erro); return; }
+
+        dadosOriginais = json.data;
+        colFiltros     = {};
+        pagAtual       = 1;
+
+        // Extrai labels reais dos meses — 3 fontes em ordem de prioridade:
+        // 1) metadado mes_labels retornado pelo backend (quando não há linhas)
+        // 2) primeira linha dos dados (MES_X_LABEL)
+        // 3) geração local dos últimos 13 meses
+        function gerarLabelsLocais() {
+            return Array.from({length: COLS_MES_LBL.length}, (_, i) => {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                return d.toISOString().slice(0, 7);
+            });
+        }
+
+        if (json.mes_labels && Object.keys(json.mes_labels).length > 0) {
+            // Fonte 1: metadado do backend
+            mesesLabels = COLS_MES_LBL.map(c => json.mes_labels[c] || c);
+        } else if (json.data.length > 0) {
+            // Fonte 2: primeira linha
+            const row = json.data[0];
+            mesesLabels = COLS_MES_LBL.map(c => {
+                const val = String(row[c] || '');
+                return val.match(/\d{4}-\d{2}/) ? val.slice(0,7) : null;
+            });
+            // Se ainda tiver nulos, complementa com geração local
+            if (mesesLabels.some(l => !l)) mesesLabels = gerarLabelsLocais();
+        } else {
+            // Fonte 3: geração local
+            mesesLabels = gerarLabelsLocais();
+        }
+
+        aplicarFiltros();
+        renderThead();
+
+        document.getElementById('resultado').style.display   = 'block';
+        document.getElementById('estado-area').style.display = 'none';
+        setBadge(json.total + ' registros', 'ok');
+
+    } catch(e) {
+        setEstado('erro', 'Erro: ' + e.message);
+    } finally {
+        document.getElementById('btn-exec').disabled = false;
+    }
+}
+
+// ── Cabeçalho duplo: grupo fixo + grupo meses ──
+function renderThead() {
+    const thead = document.getElementById('thead');
+
+    // mesesLabels já contém os valores reais ex: ["2026-04","2026-03",...]
+    // vindos do primeiro registro retornado pelo SQL (MES_X_LABEL)
+    const totalMeses = mesesLabels.length;
+
+    // Linha 1 — grupos
+    let gr1 = '<tr class="tr-grupo">';
+    gr1 += `<th colspan="${COLS_FIXAS.length}">Informações do Produto</th>`;
+    gr1 += `<th colspan="${totalMeses}" class="grupo-mes" style="text-align:center">Vendas por Mês (qtd)</th>`;
+    gr1 += '</tr>';
+
+    // Linha 2 — colunas com filtro
+    let gr2 = '<tr class="tr-col">';
+    COLS_FIXAS.forEach((col, i) => {
+        gr2 += `<th>
+            <div class="th-title" onclick="ordenar(${i})" id="th-${i}">${col} <span class="sort-icon">↕</span></div>
+            <div class="th-filter"><input type="text" placeholder="▼" oninput="filtrarColuna('${col}',this.value)" onclick="event.stopPropagation()"/></div>
+        </th>`;
+    });
+    // Usa mesesLabels (valores reais: "2026-04", "2026-03", ...)
+    mesesLabels.forEach((mes, i) => {
+        const idx = COLS_FIXAS.length + i;
+        // Formata YYYY-MM → MMM/YYYY para exibição
+        const partes = mes.split('-');
+        const nomeMes = partes.length === 2
+            ? new Date(parseInt(partes[0]), parseInt(partes[1])-1, 1)
+                .toLocaleDateString('pt-BR', {month:'short', year:'numeric'})
+                .replace('.','').toUpperCase()
+            : mes;
+        gr2 += `<th style="border-left:1px solid var(--border)">
+            <div class="th-title" onclick="ordenar(${idx})" id="th-${idx}" style="justify-content:flex-end;font-size:11px">${nomeMes} <span class="sort-icon">↕</span></div>
+        </th>`;
+    });
+    gr2 += '</tr>';
+
+    thead.innerHTML = gr1 + gr2;
+}
+
+// ── Aplicar filtros (busca global + filtros de coluna) ──
+function aplicarFiltros() {
+    const busca = (document.getElementById('busca-global')?.value || '').toLowerCase();
+    dadosFiltrados = dadosOriginais.filter(row => {
+        for (const [col, val] of Object.entries(colFiltros)) {
+            if (!val) continue;
+            if (!String(row[col]??'').toLowerCase().includes(val.toLowerCase())) return false;
+        }
+        if (busca) {
+            const str = COLS_FIXAS.map(c => String(row[c]??'')).join(' ').toLowerCase();
+            if (!str.includes(busca)) return false;
+        }
+        return true;
+    });
+    renderTbody();
+    renderTfoot();
+    renderPaginacao();
+    atualizarInfo();
+}
+
+function filtrarColuna(col, val) { colFiltros[col] = val; pagAtual=1; aplicarFiltros(); }
+
+// ── Corpo ──
+function renderTbody() {
+    const inicio = (pagAtual-1)*POR_PAGINA;
+    const pagina = dadosFiltrados.slice(inicio, inicio+POR_PAGINA);
+    const tbody  = document.getElementById('tbody');
+
+    if (pagina.length === 0) {
+        tbody.innerHTML=`<tr><td colspan="${COLS_FIXAS.length+mesesLabels.length}" class="muted" style="padding:40px">Nenhum registro.</td></tr>`;
+        return;
+    }
+
+    // Heatmap: máx por coluna de mês (somente página atual)
+    const maxPorMes = COLS_MES_QTD.map(c => Math.max(...pagina.map(r => Number(r[c])||0)));
+
+    tbody.innerHTML = pagina.map(row => {
+        let cells = COLS_FIXAS.map(c => {
+            const v = row[c];
+            if (v===null||v===undefined) return `<td class="muted">—</td>`;
+            if (typeof v==='number') return `<td class="num">${fmt(v)}</td>`;
+            return `<td>${v}</td>`;
+        }).join('');
+
+        cells += COLS_MES_QTD.map((c, i) => {
+            const v   = Number(row[c]) || 0;
+            const max = maxPorMes[i];
+            let style = '';
+            if (v > 0 && max > 0) {
+                const pct   = v / max;
+                const alpha = 0.1 + pct * 0.35;
+                style = `background:rgba(0,212,170,${alpha.toFixed(2)});color:${pct>0.6?'#00d4aa':'var(--text)'}`;
+            }
+            const cls = v === 0 ? 'mes mes-zero' : 'mes';
+            return `<td class="${cls}" style="${style}">${v===0?'—':fmt(v)}</td>`;
+        }).join('');
+
+        return `<tr>${cells}</tr>`;
+    }).join('');
+}
+
+// ── Totais por coluna de mês ──
+function renderTfoot() {
+    const tfoot = document.getElementById('tfoot');
+    let row = '<tr class="tr-total">';
+    row += `<td class="label-total" colspan="${COLS_FIXAS.length}" style="text-align:right;padding-right:14px">TOTAL DO PERÍODO</td>`;
+    COLS_MES_QTD.forEach(c => {
+        const total = dadosFiltrados.reduce((s,r) => s+(Number(r[c])||0), 0);
+        row += `<td class="mes" style="text-align:right;border-left:1px solid var(--border)">${fmt(total)}</td>`;
+    });
+    row += '</tr>';
+    tfoot.innerHTML = row;
+}
+
+// ── Ordenação ──
+function ordenar(idx) {
+    if (sortCol===idx) sortAsc=!sortAsc; else { sortCol=idx; sortAsc=true; }
+    const isFixa = idx < COLS_FIXAS.length;
+    const col    = isFixa ? COLS_FIXAS[idx] : COLS_MES_QTD[idx - COLS_FIXAS.length];
+
+    document.querySelectorAll('.th-title').forEach((el,i) => {
+        el.classList.remove('sort-asc','sort-desc');
+        el.querySelector('.sort-icon').textContent='↕';
+        if (i===idx) { el.classList.add(sortAsc?'sort-asc':'sort-desc'); el.querySelector('.sort-icon').textContent=sortAsc?'↑':'↓'; }
+    });
+
+    dadosFiltrados.sort((a,b) => {
+        const va=a[col], vb=b[col];
+        if(va==null)return 1; if(vb==null)return -1;
+        return sortAsc?(va>vb?1:-1):(va<vb?1:-1);
+    });
+    pagAtual=1; renderTbody(); renderPaginacao();
+}
+
+// ── Paginação ──
+function renderPaginacao() {
+    const total  = dadosFiltrados.length;
+    const paginas= Math.ceil(total/POR_PAGINA);
+    const ini    = Math.min((pagAtual-1)*POR_PAGINA+1, total);
+    const fim    = Math.min(pagAtual*POR_PAGINA, total);
+    document.getElementById('pag-info').textContent = total>0 ? `Exibindo ${ini}–${fim} de ${total}` : 'Sem resultados';
+
+    const vis = new Set([1, paginas]);
+    for(let p=Math.max(1,pagAtual-2); p<=Math.min(paginas,pagAtual+2); p++) vis.add(p);
+    const lista = [...vis].sort((a,b)=>a-b);
+
+    let html = `<button class="pag-btn" ${pagAtual===1?'disabled':''} onclick="irPag(${pagAtual-1})">‹</button>`;
+    let ant=0;
+    lista.forEach(p => {
+        if(ant && p-ant>1) html+=`<button class="pag-btn" disabled>…</button>`;
+        html+=`<button class="pag-btn ${p===pagAtual?'active':''}" onclick="irPag(${p})">${p}</button>`;
+        ant=p;
+    });
+    html+=`<button class="pag-btn" ${pagAtual===paginas||paginas===0?'disabled':''} onclick="irPag(${pagAtual+1})">›</button>`;
+    document.getElementById('pag-btns').innerHTML = html;
+}
+
+function irPag(p) { pagAtual=p; renderTbody(); renderPaginacao(); document.querySelector('.table-wrap')?.scrollTo(0,0); }
+function atualizarInfo() {
+    const el=document.getElementById('resultado-info');
+    if(el) el.innerHTML=`<strong>${dadosFiltrados.length.toLocaleString('pt-BR')}</strong> de ${dadosOriginais.length.toLocaleString('pt-BR')} registros`;
+}
+
+// ── Exportar ──
+function exportarExcel() {
+    const rows = dadosFiltrados.map(row => {
+        const obj={};
+        COLS_FIXAS.forEach(c => obj[c]=row[c]??'');
+        mesesLabels.forEach((mes,i) => obj[mes]=Number(row[COLS_MES_QTD[i]])||0);
+        return obj;
+    });
+    // Linha de totais
+    const tot={};
+    COLS_FIXAS.forEach((c,i) => tot[c]= i===0 ? 'TOTAL' : '');
+    mesesLabels.forEach((mes,i) => {
+        tot[mes]=dadosFiltrados.reduce((s,r)=>s+(Number(r[COLS_MES_QTD[i]])||0),0);
+    });
+    rows.push(tot);
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, CONFIG.titulo||'Pivot');
+    XLSX.writeFile(wb, (CONFIG.titulo||'Pivot') + '.xlsx');
+}
+
+function exportarCSV() {
+    const headers = [...COLS_FIXAS, ...mesesLabels];
+    const linhas  = dadosFiltrados.map(row =>
+        headers.map(h => {
+            const idx = mesesLabels.indexOf(h);
+            const v   = idx>=0 ? (Number(row[COLS_MES_QTD[idx]])||0) : (row[h]??'');
+            return `"${v}"`;
+        }).join(';')
+    );
+    const blob = new Blob(['\uFEFF'+headers.join(';')+'\n'+linhas.join('\n')], {type:'text/csv;charset=utf-8'});
+    const a = Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:(CONFIG.titulo||'Pivot')+'.csv'});
+    a.click();
+}
+
+// ── Helpers ──
+function setEstado(tipo, msg='') {
+    document.getElementById('resultado').style.display='none';
+    document.getElementById('estado-area').style.display='block';
+    if(tipo==='loading') {
+        document.getElementById('estado-area').innerHTML=`<div class="estado"><div class="spinner"></div><div>Executando consulta...</div></div>`;
+        setBadge('Carregando...','info');
+    } else if(tipo==='erro') {
+        document.getElementById('estado-area').innerHTML=`<div class="erro-box">⚠ ${msg}</div>`;
+        setBadge('Erro','err');
+    }
+}
+function setBadge(txt,tipo) {
+    const b=document.getElementById('status-badge');
+    b.textContent=txt; b.className=`badge badge-${tipo}`; b.style.display='inline-flex';
+}
+function limpar() {
+    FILTROS_DEF.forEach(f=>{const el=document.getElementById('f_'+f.id);if(el)el.value='';});
+    document.getElementById('resultado').style.display='none';
+    document.getElementById('estado-area').style.display='block';
+    document.getElementById('estado-area').innerHTML=`<div class="estado"><div class="estado-icon">⚡</div><div>Configure os filtros e clique em <strong>Executar</strong></div></div>`;
+    document.getElementById('status-badge').style.display='none';
+}
+function fmt(v) {
+    if (v === null || v === undefined) return '—';
+    if (typeof v === 'number') {
+        return Number.isInteger(v)
+            ? v.toLocaleString('pt-BR')
+            : v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+    if (typeof v === 'string') {
+        const n = parseFloat(v.replace(',','.'));
+        if (!isNaN(n) && v.includes('.')) {
+            return n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+        }
+    }
+    return v;
+}
+</script>
+{% endblock %}

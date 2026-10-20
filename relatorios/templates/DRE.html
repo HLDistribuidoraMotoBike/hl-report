@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRE · Diretoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy: #15233f;
+  --navy-deep: #0c1729;
+  --navy-soft: #2a3c63;
+  --paper: #f6f5f1;
+  --paper-card: #ffffff;
+  --ink: #1c2230;
+  --ink-soft: #5b6478;
+  --line: #e1ddd3;
+  --line-strong: #c9c3b4;
+  --gold: #a9842c;
+  --gold-soft: #d8c089;
+  --green: #1f6f4f;
+  --green-bg: #e7f2ec;
+  --red: #9c3b2e;
+  --red-bg: #f7e9e6;
+  --mono: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+  --serif: "Source Serif 4", "Iowan Old Style", "Georgia", serif;
+  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --radius: 3px;
+  --shadow-card: 0 1px 2px rgba(21,35,63,0.06), 0 1px 1px rgba(21,35,63,0.04);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app{max-width: 1320px; margin: 0 auto; padding: 0 28px 80px;}
+
+/* ===== MASTHEAD ===== */
+.masthead{
+  border-bottom: 2px solid var(--navy);
+  padding: 30px 0 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.masthead-left{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;}
+.brand-mark{
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 26px;
+  color: var(--navy);
+  letter-spacing: 0.2px;
+  white-space:nowrap;
+}
+.brand-sub{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--line-strong);
+  padding-left: 14px;
+}
+.masthead-right{
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+.masthead-right strong{color: var(--navy); font-weight: 600;}
+
+/* ===== KPI STRIP ===== */
+.kpi-strip{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--line-strong);
+  margin: 22px 0 26px;
+  border: 1px solid var(--line-strong);
+}
+.kpi{
+  background: var(--paper-card);
+  padding: 16px 18px;
+  position: relative;
+  transition: background 0.15s ease;
+}
+.kpi-label{
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display:block;
+}
+.kpi-value{
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: -0.2px;
+}
+.kpi-value.neg{color: var(--red);}
+.kpi-value.pos{color: var(--green);}
+.kpi-delta{
+  font-family: var(--mono);
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--ink-soft);
+}
+.kpi-delta .tag-up{color: var(--green);}
+.kpi-delta .tag-down{color: var(--red);}
+
+/* ===== TOOLBAR / FILTERS ===== */
+.toolbar{
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  align-items: flex-start;
+}
+.filter-group{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.filter-title{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.month-pills{display:flex; gap:6px;}
+.pill{
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 6px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  cursor: pointer;
+  background: var(--paper-card);
+  color: var(--ink-soft);
+  user-select: none;
+  transition: all 0.12s ease;
+}
+.pill:hover{border-color: var(--navy-soft); color: var(--navy);}
+.pill.active{
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+.seg-toggle{display:flex; border: 1px solid var(--line-strong); border-radius: 20px; overflow:hidden;}
+.seg-btn{
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 6px 13px;
+  cursor: pointer;
+  background: var(--paper-card);
+  color: var(--ink-soft);
+  border:none;
+  transition: all 0.12s ease;
+}
+.seg-btn.active{background: var(--navy); color:#fff;}
+.seg-btn + .seg-btn{border-left: 1px solid var(--line-strong);}
+
+.search-box{
+  display:flex; align-items:center; gap:8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  padding: 6px 13px;
+  min-width: 220px;
+}
+.search-box input{
+  border:none; outline:none; font-family: var(--sans); font-size: 12.5px;
+  width: 100%; background:transparent; color: var(--ink);
+}
+.search-box svg{flex-shrink:0; opacity:0.45;}
+
+.btn-ghost{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: var(--paper-card);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.btn-ghost:hover{border-color: var(--navy); color: var(--navy);}
+.btn-ghost.on{background: var(--navy); color:#fff; border-color: var(--navy);}
+
+.toolbar-spacer{flex:1;}
+.toolbar-right{display:flex; gap:10px; align-self:center; margin-left:auto;}
+
+/* ===== LAYOUT: tabela ===== */
+.panel{
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 22px;
+}
+.panel-head{
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  height: 49px;
+  box-sizing: border-box;
+}
+.panel-title{
+  font-family: var(--serif);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.panel-note{
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.panel-body{padding: 18px 20px;}
+
+
+/* ===== TABLE ===== */
+.dre-table-shell{
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.dre-head-scroll{
+  overflow: hidden;
+  border-bottom: 2px solid var(--navy);
+  background: var(--paper-card);
+}
+.dre-body-scroll{
+  overflow: auto;
+  max-height: 600px;
+}
+table.dre{
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.dre-head-table, .dre-body-table{
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+}
+table.dre thead th{
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-align: right;
+  padding: 10px 12px;
+  white-space: nowrap;
+  background: var(--paper-card);
+}
+table.dre thead th.th-account{
+  text-align:left;
+}
+table.dre thead th.col-total{color: var(--navy); font-weight:700;}
+table.dre thead th.col-var{color: var(--navy); font-weight:700;}
+table.dre tbody td{
+  padding: 7px 12px;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+table.dre tbody td:first-child{
+  text-align:left;
+  font-family: var(--sans);
+  white-space: normal;
+}
+table.dre tbody td.col-total{
+  font-weight: 600;
+  border-left: 1px solid var(--line-strong);
+  background: #fbfaf4;
+}
+table.dre tbody td.col-var{
+  font-family: var(--mono);
+  font-size: 11.5px;
+  border-left: 1px solid var(--line-strong);
+}
+tr.row-result td.col-total, tr.row-result td.col-var{background: #f1efe8;}
+tr.row-line{background: var(--paper-card);}
+tr.row-line td:first-child{padding-left: 20px; color: var(--ink);}
+tr.row-result td{
+  font-weight: 700;
+  background: #f1efe8;
+}
+tr.row-result td:first-child{color: var(--navy); font-family: var(--sans);}
+tr.row-group > td:first-child{font-weight:600; color: var(--navy); cursor:pointer;}
+tr.row-group{background: #fbfaf7;}
+tr.row-group:hover{background: #f4f2ec;}
+tr.row-line:hover{background: #fafaf7;}
+/* coluna "Conta" fixa ao rolar para o lado (fundo opaco herdado da linha + separador) */
+table.dre thead th:first-child, table.dre tbody td:first-child{
+  position: sticky; left: 0; z-index: 2;
+  box-shadow: inset -1px 0 0 var(--line-strong);
+}
+table.dre thead th:first-child{background: var(--paper-card);}
+table.dre tbody td:first-child{background: inherit;}
+table.dre tbody tr.row-result td:first-child{background: #f1efe8;}  /* o tr de resultado não tem fundo próprio */
+tr.hidden{display:none;}
+
+.acct-toggle{
+  display:inline-flex; align-items:center; gap:7px;
+}
+.acct-toggle .chev{
+  display:inline-block; width:9px; height:9px;
+  border-right: 1.6px solid var(--navy-soft);
+  border-bottom: 1.6px solid var(--navy-soft);
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+  flex-shrink:0;
+}
+tr.row-group.collapsed .chev{transform: rotate(-45deg);}
+.indent-1{padding-left: 24px !important;}
+
+.neg{color: var(--red);}
+.pos{color: var(--green);}
+.muted{color: var(--ink-soft); font-size:11px;}
+
+.cell-pct{font-size:11px; color: var(--ink-soft); font-weight:400 !important;}
+
+tr.row-highlight td:first-child{
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+mark{background: var(--gold-soft); color: var(--ink); padding:0 1px; border-radius:1px;}
+
+.empty-state{
+  text-align:center; padding: 50px 20px; color: var(--ink-soft);
+  font-family: var(--mono); font-size: 12.5px;
+}
+
+/* ===== Footer ===== */
+.report-foot{
+  margin-top: 30px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+}
+
+
+@media (max-width: 900px){
+  .kpi-strip{grid-template-columns: repeat(2,1fr);}
+  .toolbar{flex-direction:column;}
+  .toolbar-right{margin-left:0;}
+}
+
+@media print{
+  .toolbar, .btn-ghost{display:none;}
+}
+
+/* ===== Adições: filtros de filial, código da conta, aviso ===== */
+.check-pills{display:flex; gap:6px; flex-wrap:wrap;}
+.check-pill{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family: var(--mono); font-size: 11.5px;
+  padding: 5px 12px 5px 9px;
+  border: 1px solid var(--line-strong); border-radius: 20px;
+  background: var(--paper-card); color: var(--ink-soft);
+  cursor:pointer; user-select:none; transition: all 0.12s ease;
+}
+.check-pill:hover{border-color: var(--navy-soft); color: var(--navy);}
+.check-pill input{margin:0; accent-color: var(--gold); cursor:pointer;}
+.check-pill.on{background: var(--navy); border-color: var(--navy); color:#fff;}
+.check-pill small{opacity:0.7; font-size:10px;}
+.acct-code{font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); margin-right: 8px;}
+tr.row-result td:first-child .acct-code{display:none;}
+.filtro-badge{
+  display:inline-block; margin-top:4px; padding: 2px 8px; border-radius: 2px;
+  background: var(--gold-soft); color: var(--navy-deep); font-weight:600;
+}
+/* cabeçalho e corpo da tabela com a mesma largura (a barra de rolagem do corpo desalinhava as colunas) */
+.dre-head-table, .dre-body-table{min-width:0;}
+.dre-head-scroll, .dre-body-scroll{scrollbar-gutter: stable;}
+.barra-gerar{align-items:center; margin-top:22px;}
+.btn-voltar{display:inline-block; margin:0 0 14px; padding:6px 14px; border:1px solid currentColor; border-radius:6px; font-size:12px; color:inherit; text-decoration:none; opacity:.6;}
+.btn-voltar:hover{opacity:1;}
+
+/* ===== Detalhamento da conta ===== */
+td.cel-detalhe{cursor:pointer;}
+td.cel-detalhe:hover{background: var(--gold-soft) !important; text-decoration: underline dotted;}
+.det-fundo{
+  position:fixed; inset:0; background: rgba(12,23,41,0.45); display:none;
+  align-items:flex-start; justify-content:center; padding: 40px 16px; z-index: 50;
+}
+.det-fundo.aberto{display:flex;}
+.det-janela{
+  background: var(--paper-card); width: min(1100px, 100%); max-height: calc(100vh - 80px);
+  display:flex; flex-direction:column; border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(12,23,41,0.35); border-top: 3px solid var(--navy);
+}
+.det-cab{display:flex; justify-content:space-between; gap:20px; padding: 18px 22px 12px; border-bottom: 1px solid var(--line);}
+.det-cab-dir{text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:6px;}
+.det-titulo{font-family: var(--serif); font-size: 19px; font-weight:600; color: var(--navy);}
+.det-sub{font-family: var(--mono); font-size: 11px; color: var(--ink-soft); letter-spacing: 0.03em;}
+.det-total{font-family: var(--serif); font-size: 21px; font-weight:600; color: var(--navy);}
+.det-total.neg{color: var(--red);}
+.det-barra{display:flex; align-items:center; gap:14px; padding: 10px 22px; border-bottom: 1px solid var(--line);}
+.det-corpo{overflow:auto; padding: 0 22px 18px;}
+table.det{border-collapse:collapse; width:100%; font-size: 12.5px;}
+table.det th{
+  position:sticky; top:0; background: var(--paper-card); z-index:1;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing:0.05em; text-transform:uppercase;
+  color: var(--ink-soft); text-align:right; padding: 10px 10px; border-bottom: 2px solid var(--navy);
+}
+table.det th:first-child, table.det td:first-child{text-align:left;}
+table.det td{padding: 7px 10px; border-bottom: 1px solid var(--line); text-align:right; font-family: var(--mono); white-space:nowrap;}
+table.det td.txt{font-family: var(--sans); text-align:left; white-space:normal;}
+tr.det-parc{cursor:pointer;}
+tr.det-parc:hover{background:#f4f2ec;}
+tr.det-parc.aberto{background:#f1efe8;}
+tr.det-parc td:first-child{font-family: var(--sans); white-space:normal;}
+.det-tag{font-family: var(--mono); font-size: 10px; color: var(--ink-soft); margin-left: 6px;}
+.det-barra-pct{display:inline-block; height:6px; background: var(--gold-soft); vertical-align:middle; margin-right:6px; border-radius:1px;}
+tr.det-lanc-wrap > td{padding: 0 0 10px 26px; background:#fbfaf7;}
+table.det-lanc{border-collapse:collapse; width:100%; font-size: 12px;}
+table.det-lanc th{position:static; border-bottom: 1px solid var(--line-strong); padding: 7px 8px; background:transparent;}
+table.det-lanc td{padding: 5px 8px; border-bottom: 1px dotted var(--line);}
+.det-aviso{font-family: var(--mono); font-size: 11px; color: var(--ink-soft); padding: 10px 2px;}
+.det-aviso.erro{color: var(--red);}
+.campo-mes{
+  font-family: var(--mono); font-size: 12px; color: var(--ink);
+  border: 1px solid var(--line-strong); border-radius: 20px; padding: 5px 12px; background: var(--paper-card);
+}
+.gerar-btn:disabled{opacity:0.5; cursor:wait;}
+.gerar-status{font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft);}
+.gerar-status.erro{color: var(--red);}
+@media print{
+  .dre-body-scroll{max-height:none; overflow:visible;}
+  .barra-gerar, #sem-dados, .det-fundo, .btn-voltar{display:none !important;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <a href="/" class="btn-voltar" id="btn-voltar" style="display:none">← Voltar</a>
+
+  <header class="masthead">
+    <div class="masthead-left">
+      <span class="brand-mark">Demonstração do Resultado</span>
+      <span class="brand-sub">Relatório Gerencial · Diretoria</span>
+    </div>
+    <div class="masthead-right">
+      Período-base: <strong id="hdr-periodo"></strong><br>
+      Regime: competência · Valores em R$<br>
+      <span id="hdr-filiais"></span>
+    </div>
+  </header>
+
+  <section class="toolbar barra-gerar" id="barra-gerar" style="display:none">
+    <div class="filter-group">
+      <span class="filter-title">Período</span>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <input type="month" id="per-inicio" class="campo-mes"> <span class="muted">até</span>
+        <input type="month" id="per-fim" class="campo-mes">
+        <button class="btn-ghost on gerar-btn" onclick="gerarPeriodo()">Gerar</button>
+        <button class="btn-ghost gerar-btn" onclick="baixarHtml()" title="Salva um arquivo .html com este resultado para enviar">Baixar HTML</button>
+      </div>
+    </div>
+    <span id="gerar-status" class="gerar-status"></span>
+  </section>
+
+  <div id="sem-dados" class="empty-state">Informe o período e clique em <strong>Gerar</strong>.</div>
+
+  <div id="conteudo" style="display:none">
+  <section class="kpi-strip" id="kpi-strip"></section>
+
+  <section class="toolbar">
+    <div class="filter-group">
+      <span class="filter-title">Meses</span>
+      <div class="month-pills" id="month-pills" style="flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-title">Empresas</span>
+      <div class="check-pills" id="grupo-checks"></div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-title">Colunas da tabela</span>
+      <div class="seg-toggle" id="colview-toggle">
+        <button class="seg-btn active" data-colview="monthly" onclick="setColumnView('monthly')">Por mês</button>
+        <button class="seg-btn" data-colview="total" onclick="setColumnView('total')">Total do período</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-title">Visualizar como</span>
+      <div class="seg-toggle" id="mode-toggle">
+        <button class="seg-btn active" data-mode="rs" onclick="setMode('rs')">R$</button>
+        <button class="seg-btn" data-mode="pct" onclick="setMode('pct')">% da receita</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-title">Unidade</span>
+      <div class="seg-toggle" id="unit-toggle">
+        <button class="seg-btn active" data-unit="unit" onclick="setUnit('unit')">Inteiro</button>
+        <button class="seg-btn" data-unit="thousand" onclick="setUnit('thousand')">Em milhares</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-title">Buscar conta</span>
+      <div class="search-box">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="nome ou código: comissões, 4.01.01…" oninput="onSearchInput(this.value)">
+      </div>
+    </div>
+
+    <div class="toolbar-right">
+      <button class="btn-ghost on" id="btn-variation" onclick="toggleVariation()">Mostrar variação</button>
+      <button class="btn-ghost on" id="btn-zeros" onclick="toggleZeros()">Ocultar zeradas</button>
+      <button class="btn-ghost" onclick="expandAll(true)">Expandir tudo</button>
+      <button class="btn-ghost" onclick="expandAll(false)">Recolher tudo</button>
+      <button class="btn-ghost" onclick="printReport()">Imprimir / PDF</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title">Demonstração do Resultado — detalhado por conta</span>
+      <span class="panel-note">Clique nos grupos para expandir / recolher</span>
+    </div>
+    <div class="panel-body" style="padding-bottom:0;">
+      <div class="dre-table-shell">
+        <div class="dre-head-scroll">
+          <table class="dre dre-head-table">
+            <colgroup id="dre-head-colgroup"></colgroup>
+            <thead>
+              <tr id="table-head-row"></tr>
+            </thead>
+          </table>
+        </div>
+        <div class="dre-body-scroll" id="dre-body-scroll">
+          <table class="dre dre-body-table">
+            <colgroup id="dre-body-colgroup"></colgroup>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <footer class="report-foot">
+    <span id="foot-fonte"></span>
+    <span>Relatório gerado para apresentação interna · valores sem ajuste de inflação.</span>
+  </footer>
+
+</div>
+
+<div class="det-fundo" id="det-fundo" onclick="if(event.target===this) fecharDetalhe()">
+  <div class="det-janela" role="dialog" aria-modal="true" aria-labelledby="det-titulo">
+    <div class="det-cab">
+      <div>
+        <div class="det-sub" id="det-codigo"></div>
+        <div class="det-titulo" id="det-titulo"></div>
+        <div class="det-sub" id="det-periodo"></div>
+      </div>
+      <div class="det-cab-dir">
+        <div class="det-sub">Total</div>
+        <div class="det-total" id="det-total"></div>
+        <button class="btn-ghost" onclick="fecharDetalhe()" title="Fechar (Esc)">Fechar ✕</button>
+      </div>
+    </div>
+    <div class="det-barra">
+      <div class="search-box">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="det-busca" placeholder="filtrar fornecedor…" oninput="renderDetalhe()">
+      </div>
+      <span class="det-sub" id="det-info"></span>
+    </div>
+    <div class="det-corpo" id="det-corpo"></div>
+  </div>
+</div>
+
+<script>
+let D = /*__DADOS__*/null;
+const CFG = {{ config | tojson }};
+const REL_ID = {{ rel_id | tojson }};
+</script>
+<script>
+/* =========================================================
+   DRE INTERATIVO — dados do SAP B1, estrutura do modelo financeiro
+   ========================================================= */
+
+let MONTHS = [], MONTHS_FULL = [], NM = 0, ALL_MONTHS = [];
+const zeros = () => new Array(NM).fill(0);
+
+// ---------- State ----------
+const state = {
+  activeMonths: [],
+  mode: "rs",
+  unit: "unit",
+  search: "",
+  collapsed: new Set(),
+  columnView: "monthly",
+  showVariation: true,
+  hideZeros: true,
+  grupos: new Set(["base"]),   // empresas (grupos de filiais) marcadas, D.grupos[].chave; ao menos uma
+};
+
+// ---------- Árvore do modelo ----------
+// Linhas do modelo -> nós; contas penduradas na linha. Valores são preenchidos por recalcular().
+let linhaPorId, nos, nosLinha, filhosLinha, contasLinha, DATA = [];
+function novoNo(key, obj){ const n = Object.assign({key, monthly: zeros(), children: null}, obj); nos.set(key, n); return n; }
+
+function montarFilhos(id){
+  return (filhosLinha.get(id) || []).map(fid => nosLinha.get(fid)).concat(contasLinha.get(id) || []);
+}
+function construir(id){
+  const no = nosLinha.get(id);
+  if (no.linha.formula) return no;
+  let kids = montarFilhos(id).map(k => k.type === "line" ? k : construir(k.linha.id));
+  // O modelo repete o nome em níveis seguidos (ex.: "RECEITA OPERACIONAL BRUTA" > "RECEITA OPERACIONAL BRUTA").
+  // Grupo com um único subgrupo de mesmo nome mostra um só nível (os valores são os mesmos).
+  while (kids.length === 1 && kids[0].type === "group" && norm(kids[0].name) === norm(no.name)){
+    kids = kids[0].children || [];
+  }
+  no.children = kids;
+  return no;
+}
+function norm(s){ return (s || "").trim().toUpperCase(); }
+
+// Carrega um resultado (embutido no arquivo ou vindo do servidor) e monta a árvore.
+function carregar(dados){
+  D = dados;
+  MONTHS = D.meses; MONTHS_FULL = D.mesesNome; NM = MONTHS.length;
+  ALL_MONTHS = MONTHS.map((_, i) => i);
+  state.activeMonths = ALL_MONTHS.slice();
+  linhaPorId = new Map(D.linhas.map(l => [l.id, l]));
+  nos = new Map(); nosLinha = new Map(); filhosLinha = new Map(); contasLinha = new Map();
+  D.linhas.forEach(l => {
+    nosLinha.set(l.id, novoNo("c" + l.id, {name: l.nome, fullName: l.nome, code: "", linha: l, type: l.formula ? "result" : "group"}));
+    if (l.pai && l.pai !== l.id && linhaPorId.has(l.pai)){
+      if (!filhosLinha.has(l.pai)) filhosLinha.set(l.pai, []);
+      filhosLinha.get(l.pai).push(l.id);
+    }
+  });
+  D.contas.slice().sort((a, b) => a.ordem - b.ordem || a.codigo.localeCompare(b.codigo)).forEach(c => {
+    if (!contasLinha.has(c.linha)) contasLinha.set(c.linha, []);
+    contasLinha.get(c.linha).push(novoNo("a" + c.codigo, {name: c.nome, fullName: c.codigo + " - " + c.nome, code: c.codigo, conta: c, type: "line"}));
+  });
+  DATA = D.linhas.filter(l => !l.pai || !linhaPorId.has(l.pai)).map(l => construir(l.id));
+  recalcular();
+  document.getElementById("hdr-periodo").textContent = D.periodo;
+  document.getElementById("foot-fonte").textContent =
+    `Fonte: SAP Business One (${D.empresa}) · modelo financeiro "Dre" nº ${D.modelo} · gerado em ${D.geradoEm}`;
+  document.getElementById("conteudo").style.display = "";
+  document.getElementById("sem-dados").style.display = "none";
+  periodoNosCampos(D.inicio, D.fim);
+}
+
+// ---------- Cálculo ----------
+function recalcular(){
+  const grupos = [...state.grupos];
+  nos.forEach(n => { n.monthly = zeros(); });
+  // contas
+  D.contas.forEach(c => {
+    const n = nos.get("a" + c.codigo);
+    grupos.forEach(g => { const v = c.valores[g]; if (v) v.forEach((x, i) => n.monthly[i] += x); });
+    const ln = nosLinha.get(c.linha);
+    if (ln) n.monthly.forEach((x, i) => ln.monthly[i] += x);
+  });
+  // soma pela hierarquia: do nível mais profundo para o topo
+  D.linhas.slice().sort((a, b) => b.nivel - a.nivel).forEach(l => {
+    if (l.formula || !l.pai || !linhaPorId.has(l.pai) || l.pai === l.id) return;
+    const pai = nosLinha.get(l.pai).monthly, v = nosLinha.get(l.id).monthly;
+    v.forEach((x, i) => pai[i] += x);
+  });
+  // fórmulas, na ordem do modelo (uma fórmula pode usar outra anterior)
+  D.linhas.forEach(l => {
+    if (!l.formula) return;
+    const p = l.formula.params, ops = l.formula.ops;
+    const out = nosLinha.get(l.id).monthly;
+    (nosLinha.get(p[0])?.monthly || zeros()).forEach((x, i) => out[i] = x);
+    for (let k = 1; k < p.length; k++){
+      const s = ops[k - 1] === "-" ? -1 : 1;
+      (nosLinha.get(p[k])?.monthly || zeros()).forEach((x, i) => out[i] += s * x);
+    }
+  });
+}
+const linhaChave = k => nosLinha.get(D.linhasChave[k]);
+
+// ---------- Helpers ----------
+function groupThousands(intStr){
+  let out = "", count = 0;
+  for(let i = intStr.length - 1; i >= 0; i--){
+    out = intStr[i] + out; count++;
+    if (count % 3 === 0 && i !== 0) out = "." + out;
+  }
+  return out;
+}
+function fmtBRL(v, unit){
+  if (unit === "thousand") v = v/1000;
+  const neg = v < -0.004;
+  const abs = Math.abs(v);
+  let s;
+  try{ s = abs.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+  catch(e){ s = groupThousands(Math.round(abs).toString()); }
+  return (neg? "(" : "") + s + (neg? ")" : "");
+}
+function fmtPct(v){
+  const neg = v < -0.004;
+  const abs = Math.abs(v);
+  let s;
+  try{ s = abs.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}); }
+  catch(e){ s = abs.toFixed(1).replace(".", ","); }
+  return (neg? "(" : "") + s + "%" + (neg? ")" : "");
+}
+function sumSelected(monthly, idxList){ return idxList.reduce((a,i)=>a+monthly[i],0); }
+function pctOfReceita(v, idxList){
+  const base = sumSelected(linhaChave("receita_liquida").monthly, idxList);
+  if (Math.abs(base) < 0.001) return 0;
+  return (v/base)*100;
+}
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+function highlightTerm(text, term){
+  if(!term) return escapeHtml(text);
+  const idx = text.toLowerCase().indexOf(term.toLowerCase());
+  if (idx === -1) return escapeHtml(text);
+  return escapeHtml(text.slice(0,idx)) + "<mark>" + escapeHtml(text.slice(idx, idx+term.length)) + "</mark>" + escapeHtml(text.slice(idx+term.length));
+}
+function nodeMatches(node, term){
+  if(!term) return true;
+  const t = term.toLowerCase();
+  if (node.name.toLowerCase().includes(t) || node.fullName.toLowerCase().includes(t)) return true;
+  if (node.children) return node.children.some(c => nodeMatches(c, t));
+  return false;
+}
+function isZero(node){
+  return state.activeMonths.every(i => Math.abs(node.monthly[i]) < 0.005);
+}
+
+// ---------- KPI ----------
+function computeKPIs(){
+  const idx = state.activeMonths;
+  const s = k => sumSelected(linhaChave(k).monthly, idx);
+  const receita = s("receita_liquida"), lucroBruto = s("lucro_bruto"), lucroOp = s("lucro_operacional");
+  const lucroLiq = s("lucro_liquido"), resultFin = s("resultado_financeiro");
+  const m = v => receita ? (v/receita*100) : 0;
+  return {receita, lucroBruto, lucroOp, lucroLiq, resultFin, margemBruta: m(lucroBruto), margemLiq: m(lucroLiq), margemOp: m(lucroOp)};
+}
+function renderKPIs(){
+  const k = computeKPIs();
+  const cls = v => v < 0 ? "neg" : "pos";
+  const pct = v => v.toLocaleString('pt-BR',{maximumFractionDigits:1});
+  document.getElementById("kpi-strip").innerHTML = `
+    <div class="kpi">
+      <span class="kpi-label">Receita Líquida</span>
+      <div class="kpi-value">${fmtBRL(k.receita, state.unit)}</div>
+      <div class="kpi-delta">${state.activeMonths.length} de ${NM} meses selecionados</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-label">Lucro Bruto</span>
+      <div class="kpi-value ${cls(k.lucroBruto)}">${fmtBRL(k.lucroBruto, state.unit)}</div>
+      <div class="kpi-delta">margem ${pct(k.margemBruta)}%</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-label">Lucro Operacional</span>
+      <div class="kpi-value ${cls(k.lucroOp)}">${fmtBRL(k.lucroOp, state.unit)}</div>
+      <div class="kpi-delta">margem ${pct(k.margemOp)}%</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-label">Resultado Financeiro</span>
+      <div class="kpi-value ${cls(k.resultFin)}">${fmtBRL(k.resultFin, state.unit)}</div>
+      <div class="kpi-delta">receitas − despesas financeiras</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-label">Lucro Líquido</span>
+      <div class="kpi-value ${cls(k.lucroLiq)}">${fmtBRL(k.lucroLiq, state.unit)}</div>
+      <div class="kpi-delta">margem ${pct(k.margemLiq)}%</div>
+    </div>`;
+}
+
+// ---------- Tabela ----------
+function monthValue(node, mi){
+  const v = node.monthly[mi];
+  return state.mode === "pct" ? pctOfReceita(v, [mi]) : v;
+}
+function rowValue(node){
+  const v = sumSelected(node.monthly, state.activeMonths);
+  return state.mode === "pct" ? pctOfReceita(v, state.activeMonths) : v;
+}
+function fmtVal(v){ return state.mode === "pct" ? fmtPct(v) : fmtBRL(v, state.unit); }
+
+// Variação entre o último e o primeiro mês selecionado.
+// Linhas de resultado (fórmulas) e linhas de natureza credora (receitas): subir é bom.
+// Linhas de natureza devedora (custos/despesas, negativas): a seta acompanha o tamanho da despesa,
+// e despesa maior é ruim (vermelho).
+function variation(node){
+  const idx = state.activeMonths;
+  if (idx.length < 2) return null;
+  const a = node.monthly[idx[0]], b = node.monthly[idx[idx.length-1]];
+  const resultLike = node.type === "result" || sumSelected(node.monthly, idx) >= 0;
+  if (resultLike){
+    if (Math.abs(a) < 0.005 && Math.abs(b) < 0.005) return {pct: 0, arrow: "flat", colorDir: "flat"};
+    const delta = b - a;
+    const pct = Math.abs(a) < 0.005 ? null : (delta / Math.abs(a)) * 100;
+    const arrow = delta > 0.005 ? "up" : (delta < -0.005 ? "down" : "flat");
+    return {pct, arrow, colorDir: arrow};
+  }
+  const absA = Math.abs(a), absB = Math.abs(b);
+  if (absA < 0.005 && absB < 0.005) return {pct: 0, arrow: "flat", colorDir: "flat"};
+  const pct = absA < 0.005 ? null : ((absB - absA) / absA) * 100;
+  const arrow = absB > absA ? "up" : (absB < absA ? "down" : "flat");
+  return {pct, arrow, colorDir: arrow === "flat" ? "flat" : (arrow === "up" ? "down" : "up")};
+}
+function fmtVariation(node){
+  const v = variation(node);
+  if (v === null) return "—";
+  const sym = v.arrow === "up" ? "▲" : (v.arrow === "down" ? "▼" : "•");
+  const cls = v.colorDir === "up" ? "pos" : (v.colorDir === "down" ? "neg" : "muted");
+  let label;
+  if (v.pct === null) label = "novo";
+  else { const r = Math.round(Math.abs(v.pct)); label = (r > 9999 ? "9999+" : String(r)) + "%"; }
+  return `<span class="${cls}">${sym} ${label}</span>`;
+}
+function activeColumnCount(){
+  const n = state.activeMonths.length;
+  if (state.columnView !== "monthly") return 2;
+  return 1 + n + (n > 1 ? 1 : 0) + (state.showVariation && n > 1 ? 1 : 0);
+}
+
+function buildRows(nodes, depth){
+  let html = "";
+  for(const node of nodes){
+    if (!nodeMatches(node, state.search)) continue;
+    if (state.hideZeros && node.type !== "result" && isZero(node)) continue;
+    const isGroup = !!(node.children && node.children.length);
+    const rowType = node.type === "result" ? "row-result" : (isGroup ? "row-group" : "row-line");
+    const collapsedCls = (isGroup && state.collapsed.has(node.key)) ? " collapsed" : "";
+    // Só o nome da conta (a gestão não usa o código); o código segue na busca e no title da linha.
+    const nameDisplay = highlightTerm(node.name, state.search);
+    const indentStyle = depth > 0 ? `style="padding-left:${20 + depth*18}px"` : "";
+
+    let cells = "";
+    const n = state.activeMonths.length;
+    // Conta com valor: clicar abre o detalhamento (fornecedores e lançamentos) — só no modo servidor.
+    const det = (meses, v) => (NO_SERVIDOR && node.type === "line" && Math.abs(v) > 0.004)
+      ? ` cel-detalhe" title="Ver fornecedores e lançamentos" onclick="abrirDetalhe('${escapeAttr(node.code)}', [${meses.join(",")}])` : "";
+    if (state.columnView === "monthly"){
+      state.activeMonths.forEach(mi => {
+        const v = monthValue(node, mi);
+        cells += `<td class="${v<0?'neg':''}${det([mi], node.monthly[mi])}">${fmtVal(v)}</td>`;
+      });
+      if (n > 1){ const t = rowValue(node); cells += `<td class="col-total ${t<0?'neg':''}${det(state.activeMonths, sumSelected(node.monthly, state.activeMonths))}">${fmtVal(t)}</td>`; }
+      if (n > 1 && state.showVariation) cells += `<td class="col-var">${fmtVariation(node)}</td>`;
+    } else {
+      const t = rowValue(node);
+      cells += `<td class="${t<0?'neg':''}${det(state.activeMonths, sumSelected(node.monthly, state.activeMonths))}">${fmtVal(t)}</td>`;
+    }
+    const nameCell = isGroup
+      ? `<td ${indentStyle}><span class="acct-toggle" onclick="toggleGroup('${escapeAttr(node.key)}')"><span class="chev"></span>${nameDisplay}</span></td>`
+      : `<td ${indentStyle}>${nameDisplay}</td>`;
+    html += `<tr class="${rowType}${collapsedCls}" ${isGroup?`data-key="${escapeAttr(node.key)}"`:''} data-depth="${depth}" title="${escapeHtml(node.fullName)}">${nameCell}${cells}</tr>`;
+    if (isGroup) html += buildRows(node.children, depth+1);
+  }
+  return html;
+}
+
+function getColumnWidths(){
+  const n = state.activeMonths.length;
+  const w = [];
+  if (state.columnView === "monthly"){
+    state.activeMonths.forEach(()=> w.push(104));
+    if (n > 1) w.push(130);
+    if (n > 1 && state.showVariation) w.push(90);
+  } else w.push(140);
+  // A coluna "Conta" fica com o espaço que sobra na caixa (com poucos meses não sobra vazio à direita).
+  const disponivel = document.getElementById("dre-body-scroll").clientWidth;
+  w.unshift(Math.max(340, disponivel - w.reduce((a, b) => a + b, 0)));
+  return w;
+}
+let resizeDebounce;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeDebounce);
+  resizeDebounce = setTimeout(() => { if (D) renderTableHead(); }, 120);
+});
+function renderTableHead(){
+  const n = state.activeMonths.length;
+  let cells = `<th class="th-account">Conta</th>`;
+  if (state.columnView === "monthly"){
+    state.activeMonths.forEach(mi => cells += `<th>${MONTHS[mi]}</th>`);
+    if (n > 1) cells += `<th class="col-total">Total período</th>`;
+    if (n > 1 && state.showVariation) cells += `<th class="col-var">Variação</th>`;
+  } else cells += `<th>Total período</th>`;
+  document.getElementById("table-head-row").innerHTML = cells;
+  const larguras = getColumnWidths();
+  const cg = larguras.map(x => `<col style="width:${x}px">`).join("");
+  document.getElementById("dre-head-colgroup").innerHTML = cg;
+  document.getElementById("dre-body-colgroup").innerHTML = cg;
+  // largura explícita e igual nas duas tabelas, senão o corpo se ajusta ao conteúdo e desalinha do cabeçalho
+  const total = larguras.reduce((a, b) => a + b, 0) + "px";
+  document.querySelector(".dre-head-table").style.width = total;
+  document.querySelector(".dre-body-table").style.width = total;
+}
+let scrollSyncBound = false;
+function bindScrollSync(){
+  if (scrollSyncBound) return;
+  const head = document.querySelector(".dre-head-scroll"), body = document.getElementById("dre-body-scroll");
+  body.addEventListener("scroll", () => { head.scrollLeft = body.scrollLeft; });
+  scrollSyncBound = true;
+}
+function renderTable(){
+  renderTableHead();
+  const wrap = document.getElementById("table-body");
+  wrap.innerHTML = buildRows(DATA, 0);
+  applyCollapseVisibility();
+  bindScrollSync();
+  if (!wrap.querySelector("tr")){
+    wrap.innerHTML = `<tr><td colspan="${activeColumnCount()}" class="empty-state">Nenhuma conta encontrada para "${escapeHtml(state.search)}".</td></tr>`;
+  }
+}
+function applyCollapseVisibility(){
+  const stack = [];
+  for (const tr of document.querySelectorAll("#table-body tr")){
+    const depth = parseInt(tr.dataset.depth || "0", 10);
+    while (stack.length && stack[stack.length-1].depth >= depth) stack.pop();
+    tr.classList.toggle("hidden", stack.some(s => s.collapsed));
+    if (tr.classList.contains("row-group")) stack.push({depth, collapsed: state.collapsed.has(tr.dataset.key)});
+  }
+}
+function toggleGroup(key){
+  if (state.collapsed.has(key)) state.collapsed.delete(key); else state.collapsed.add(key);
+  renderTable();
+}
+function setColumnView(v){
+  state.columnView = v;
+  document.querySelectorAll("#colview-toggle .seg-btn").forEach(b => b.classList.toggle("active", b.dataset.colview === v));
+  renderTable();
+}
+function toggleVariation(){
+  state.showVariation = !state.showVariation;
+  document.getElementById("btn-variation").classList.toggle("on", state.showVariation);
+  renderTable();
+}
+function toggleZeros(){
+  state.hideZeros = !state.hideZeros;
+  document.getElementById("btn-zeros").classList.toggle("on", state.hideZeros);
+  renderTable();
+}
+
+// ---------- Detalhamento da conta (fornecedores e lançamentos) ----------
+const det = {conta: null, meses: [], dados: null, abertos: new Map(), seq: 0};
+function rotuloMeses(meses){
+  if (meses.length === 1) return MONTHS_FULL[meses[0]];
+  const contiguo = meses.every((m, i) => i === 0 || m === meses[i-1] + 1);
+  return contiguo ? `${MONTHS[meses[0]]} a ${MONTHS[meses[meses.length-1]]} (${meses.length} meses)`
+                  : meses.map(m => MONTHS[m]).join(", ");
+}
+function filtrosDetalhe(){
+  const chaves = det.meses.map(i => D.mesesChave[i]);
+  return {conta: det.conta.codigo, data_ini: chaves[0] + "-01", data_fim: ultimoDia(chaves[chaves.length - 1]),
+          meses: "," + chaves.join(",") + ",", incluir_base: state.grupos.has("base") ? "S" : "N",
+          filiais_grupos: listaFiliais(CFG.grupos || []),
+          filiais_incluidas: listaFiliais((CFG.grupos || []).filter(g => state.grupos.has(g.chave))),
+          filiais_ocultas: "," + (CFG.filiais_ocultas || []).join(",") + ",",
+          incluir_matriz: (CFG.grupos || []).some(g => g.origem === "MATRIZ" && state.grupos.has(g.chave)) ? "S" : "N"};
+}
+async function abrirDetalhe(codigo, meses){
+  const conta = D.contas.find(c => c.codigo === codigo);
+  const seq = ++det.seq;
+  Object.assign(det, {conta, meses, dados: null, abertos: new Map()});
+  const no = nos.get("a" + codigo);
+  const total = sumSelected(no.monthly, meses);
+  document.getElementById("det-codigo").textContent = codigo;
+  document.getElementById("det-titulo").textContent = conta.nome;
+  document.getElementById("det-periodo").textContent = rotuloMeses(meses) + " · " + empresasMarcadas();
+  const tot = document.getElementById("det-total");
+  tot.textContent = fmtBRL(total, "unit"); tot.classList.toggle("neg", total < 0);
+  document.getElementById("det-busca").value = "";
+  document.getElementById("det-info").textContent = "";
+  document.getElementById("det-corpo").innerHTML = `<div class="det-aviso">Consultando o banco…</div>`;
+  document.getElementById("det-fundo").classList.add("aberto");
+  try{
+    const rows = await executar("Parceiros", filtrosDetalhe());
+    if (seq !== det.seq) return;          // usuário já abriu outra conta
+    const itens = rows.map(r => ({
+      origem: r.Origem, parceiro: r.Parceiro || "", n: Number(r.N) || 0, valor: Math.round((Number(r.Valor) || 0) * 100) / 100,
+      nome: r.NomeParceiro || "", tipo: r.Parceiro ? "parceiro" : "",
+    }));
+    det.dados = {conta: det.conta.codigo, itens, total: Math.round(itens.reduce((a, i) => a + i.valor, 0) * 100) / 100,
+                 lancamentos: itens.reduce((a, i) => a + i.n, 0)};
+    renderDetalhe();
+  }catch(e){
+    if (seq === det.seq) document.getElementById("det-corpo").innerHTML = `<div class="det-aviso erro">Erro: ${escapeHtml(e.message)}</div>`;
+  }
+}
+function fecharDetalhe(){ det.seq++; document.getElementById("det-fundo").classList.remove("aberto"); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") fecharDetalhe(); });
+
+function nomeParceiro(it){
+  // parceiro da base SBO_MATRIZ (Especial) leva a etiqueta da origem — o mesmo código pode existir nas duas bases
+  const matriz = it.origem === "MATRIZ";
+  if (it.tipo === "parceiro") return `${escapeHtml(it.nome)}<span class="det-tag">${escapeHtml(it.parceiro)}${matriz ? " · MATRIZ" : ""}</span>`;
+  // sem parceiro cadastrado (lançamento manual etc.): um item só, sem mostrar a conta de contrapartida
+  return `Sem fornecedor${matriz ? `<span class="det-tag">MATRIZ</span>` : ""}`;
+}
+function renderDetalhe(){
+  const j = det.dados; if (!j) return;
+  const termo = document.getElementById("det-busca").value.trim().toLowerCase();
+  // Conta de receita tem dezenas de milhares de clientes: índice guardado (sem indexOf no laço),
+  // reduce em vez de Math.max(...) (estoura a pilha) e só os maiores na tela — o filtro busca em todos.
+  const MAX_TELA = 500;
+  const filtrados = j.itens.map((it, i) => [it, i]).filter(([it]) => !termo || (it.nome + " " + it.parceiro).toLowerCase().includes(termo));
+  const itens = filtrados.slice(0, MAX_TELA);
+  const maior = j.itens.reduce((m, it) => Math.max(m, Math.abs(it.valor)), 1);
+  document.getElementById("det-info").textContent =
+    `${j.itens.length.toLocaleString("pt-BR")} fornecedores/clientes ·${j.lancamentos.toLocaleString("pt-BR")} lançamentos · clique numa linha para ver os lançamentos`;
+  let h = `<table class="det"><thead><tr><th>Fornecedor / cliente</th><th>Lanç.</th><th>Valor</th><th>% da conta</th></tr></thead><tbody>`;
+  itens.forEach(([it, i]) => {
+    const aberto = det.abertos.has(i);
+    const pct = Math.abs(j.total) > 0.004 ? it.valor / j.total * 100 : 0;
+    h += `<tr class="det-parc${aberto ? ' aberto' : ''}" onclick="alternarParceiro(${i})">
+      <td><span class="acct-toggle"><span class="chev" style="transform:rotate(${aberto ? 45 : -45}deg)"></span>${nomeParceiro(it)}</span></td>
+      <td>${it.n.toLocaleString("pt-BR")}</td>
+      <td class="${it.valor < 0 ? 'neg' : ''}">${fmtBRL(it.valor, "unit")}</td>
+      <td><span class="det-barra-pct" style="width:${Math.round(Math.abs(it.valor) / maior * 60)}px"></span>${fmtPct(pct)}</td></tr>`;
+    if (aberto) h += `<tr class="det-lanc-wrap"><td colspan="4">${htmlLancamentos(det.abertos.get(i))}</td></tr>`;
+  });
+  if (!itens.length) h += `<tr><td colspan="4" class="det-aviso">Nenhum fornecedor encontrado.</td></tr>`;
+  if (filtrados.length > MAX_TELA) h += `<tr><td colspan="4" class="det-aviso">Mostrando os ${MAX_TELA} maiores de ${filtrados.length.toLocaleString("pt-BR")}. Use o filtro acima para achar os demais.</td></tr>`;
+  h += `</tbody></table>`;
+  document.getElementById("det-corpo").innerHTML = h;
+}
+function htmlLancamentos(r){
+  if (r === "carregando") return `<div class="det-aviso">Consultando lançamentos…</div>`;
+  if (r && r.erro) return `<div class="det-aviso erro">Erro: ${escapeHtml(r.erro)}</div>`;
+  if (!r.itens.length) return `<div class="det-aviso">Nenhum lançamento.</div>`;
+  let h = `<table class="det-lanc"><thead><tr><th>Data</th><th>Documento</th><th>Lançamento</th><th>Filial</th><th>Valor</th><th style="text-align:left">Histórico da linha</th><th style="text-align:left">Observação do lançamento</th></tr></thead><tbody>`;
+  r.itens.forEach(x => {
+    h += `<tr><td>${x.data}</td><td class="txt">${escapeHtml(x.tipo)}${x.doc ? " " + escapeHtml(x.doc) : ""}</td>
+      <td>${x.lancamento}</td><td class="txt">${escapeHtml(x.filial)}</td>
+      <td class="${x.valor < 0 ? 'neg' : ''}">${fmtBRL(x.valor, "unit")}</td><td class="txt">${escapeHtml(x.memo)}</td><td class="txt">${escapeHtml(x.obs)}</td></tr>`;
+  });
+  h += `</tbody></table>`;
+  if (r.truncado) h += `<div class="det-aviso">Mostrando os primeiros ${r.limite.toLocaleString("pt-BR")} lançamentos. Selecione menos meses para ver o restante.</div>`;
+  return h;
+}
+async function alternarParceiro(i){
+  if (det.abertos.has(i)){ det.abertos.delete(i); renderDetalhe(); return; }
+  const it = det.dados.itens[i];
+  det.abertos.set(i, "carregando"); renderDetalhe();
+  const seq = det.seq;
+  try{
+    const rows = await executar("Lancamentos", Object.assign(filtrosDetalhe(), {parceiro: it.parceiro, origem: it.origem}));
+    if (seq !== det.seq || !det.abertos.has(i)) return;
+    const limite = CFG.limite_lancamentos || 2000;
+    det.abertos.set(i, {limite, truncado: rows.length > limite, itens: rows.slice(0, limite).map(r => ({
+      data: r.Data, lancamento: r.Lancamento, doc: r.Documento || "",
+      tipo: TIPOS_DOC[String(r.TipoDoc)] || `Tipo ${r.TipoDoc}`,
+      filial: (r.NomeFilial || String(r.Filial)).replace("HL DISTRIBUICAO MOTO BIKE LTDA - ", "HL "),
+      valor: Math.round((Number(r.Valor) || 0) * 100) / 100, memo: r.Historico || "", obs: r.Memo || "",
+    }))});
+  }catch(e){
+    if (seq !== det.seq || !det.abertos.has(i)) return;
+    det.abertos.set(i, {erro: e.message});
+  }
+  renderDetalhe();
+}
+
+// ---------- Barra de filtros ----------
+function renderToolbar(){
+  document.getElementById("month-pills").innerHTML = MONTHS.map((m, i) =>
+    `<span class="pill ${state.activeMonths.includes(i) ? 'active' : ''}" onclick="toggleMonth(${i})">${m}</span>`).join("");
+  document.getElementById("grupo-checks").innerHTML = D.grupos.map(g => {
+    const on = state.grupos.has(g.chave);
+    return `<label class="check-pill ${on ? 'on' : ''}" title="${escapeAttr(g.detalhe)}">
+      <input type="checkbox" ${on ? 'checked' : ''} onchange="toggleGrupo('${g.chave}', this.checked)">
+      ${escapeHtml(g.rotulo)} <small>${escapeHtml(g.detalhe)}</small></label>`;
+  }).join("");
+  const soBase = state.grupos.size === 1 && state.grupos.has("base");
+  document.getElementById("hdr-filiais").innerHTML = soBase
+    ? escapeHtml(empresasMarcadas())
+    : `<span class="filtro-badge">${escapeHtml(empresasMarcadas())}</span>`;
+}
+function empresasMarcadas(){
+  const nomes = D.grupos.filter(g => state.grupos.has(g.chave)).map(g => g.rotulo);
+  return (nomes.length === D.grupos.length ? "Todas as empresas: " : "Empresas: ") + nomes.join(" + ");
+}
+function toggleMonth(i){
+  const pos = state.activeMonths.indexOf(i);
+  if (pos === -1) state.activeMonths.push(i);
+  else { if (state.activeMonths.length === 1) return; state.activeMonths.splice(pos, 1); }
+  state.activeMonths.sort((a, b) => a - b);
+  fullRender();
+}
+function toggleGrupo(chave, on){
+  if (!on && state.grupos.size === 1){ renderToolbar(); return; }  // ao menos uma empresa marcada
+  if (on) state.grupos.add(chave); else state.grupos.delete(chave);
+  recalcular();
+  fullRender();
+}
+function setMode(m){
+  state.mode = m;
+  document.querySelectorAll("#mode-toggle .seg-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  renderTable();
+}
+function setUnit(u){
+  state.unit = u;
+  document.querySelectorAll("#unit-toggle .seg-btn").forEach(b => b.classList.toggle("active", b.dataset.unit === u));
+  renderKPIs(); renderTable();
+}
+function expandAll(on){
+  if (on) state.collapsed.clear();
+  else nos.forEach(n => { if (n.children && n.children.length) state.collapsed.add(n.key); });
+  renderTable();
+}
+let searchDebounce;
+function onSearchInput(val){
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    state.search = val.trim();
+    if (state.search) state.collapsed.clear();
+    renderTable();
+  }, 120);
+}
+function printReport(){ window.print(); }
+
+function fullRender(){ renderToolbar(); renderKPIs(); renderTable(); }
+
+// ---------- Gerar período (página do Report; o HTML baixado já vem com os dados e não consulta nada) ----------
+const NO_SERVIDOR = D === null;
+const MESES_ABREV = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+const MESES_NOME = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+// Tipos de documento (OJDT.TransType) mais comuns, para o detalhamento.
+const TIPOS_DOC = {
+  "13": "NF de saída", "14": "Dev. NF saída", "15": "Entrega", "16": "Devolução",
+  "18": "NF de entrada", "19": "Dev. NF entrada", "20": "Recebimento merc.", "21": "Dev. mercadoria",
+  "24": "Contas a receber", "46": "Contas a pagar", "30": "Lançamento manual", "59": "Entrada estoque",
+  "60": "Saída estoque", "67": "Transferência", "162": "Reavaliação estoque", "202": "Ordem de produção",
+  "203": "Adiantamento cliente", "204": "Adiantamento fornec.", "321": "Reconciliação",
+};
+// Consultas auxiliares ficam em sql/<pasta>/_dre/ (fora do menu); a de saldos é o próprio relatório.
+const PASTA = REL_ID.split("/")[0];
+function ultimoDia(chave){ const [a, m] = chave.split("-").map(Number); return `${chave}-${String(new Date(a, m, 0).getDate()).padStart(2, "0")}`; }
+// Grupo de uma linha de saldo: pela origem (SBO_MATRIZ = Especial) ou, na PRD, pela filial; o resto é "base".
+function grupoDaLinha(origem, bpl){
+  const g = (CFG.grupos || []).find(g => g.origem ? g.origem === origem : (origem === "PRD" && g.filiais.includes(bpl)));
+  return g ? g.chave : "base";
+}
+const listaFiliais = gs => "," + gs.flatMap(g => g.filiais).join(",") + ",";
+async function executar(nome, filtros){
+  const id = nome === "*" ? REL_ID : `${PASTA}/_dre/${nome}`;
+  const r = await fetch(`/api/executar/${id.split("/").map(encodeURIComponent).join("/")}?${new URLSearchParams(filtros)}`);
+  let j;
+  try { j = await r.json(); } catch(e) { throw new Error("sessão expirada — recarregue a página e faça login de novo"); }
+  if (!j.ok) throw new Error(j.erro || ("HTTP " + r.status));
+  return j.data;
+}
+function mesesDoPeriodo(ini, fim){
+  const out = []; let [a, m] = ini.split("-").map(Number); const [af, mf] = fim.split("-").map(Number);
+  while (a < af || (a === af && m <= mf)){ out.push([a, m]); [a, m] = m === 12 ? [a + 1, 1] : [a, m + 1]; }
+  return out;
+}
+async function montarDados(ini, fim){
+  const meses = mesesDoPeriodo(ini, fim);
+  const chaves = meses.map(([a, m]) => `${a}-${String(m).padStart(2, "0")}`);
+  const f = {modelo: CFG.modelo};
+  const [cats, contas, saldos] = await Promise.all([
+    executar("Modelo", f), executar("Contas", f),
+    executar("*", Object.assign({data_ini: chaves[0] + "-01", data_fim: ultimoDia(chaves[chaves.length - 1]),
+                                 filiais_ocultas: "," + (CFG.filiais_ocultas || []).join(",") + ","}, f)),
+  ]);
+  if (!cats.length) throw new Error(`Modelo ${CFG.modelo} sem linhas em OFRC.`);
+  const linhas = cats.map(c => {
+    const params = [1, 2, 3, 4, 5].map(i => c["Param_" + i]).filter(p => p);  // Param_n = 0 quando vazio
+    const ops = params.slice(1).map((_, i) => c["Op_" + (i + 1)] || "+");
+    return {id: c.CatId, nome: c.Nome, nivel: c.Nivel || 1, pai: c.Pai || null, classe: c.Classe || "",
+            formula: params.length ? {params, ops} : null};
+  });
+  const valores = {};  // conta -> grupo -> [valor por mês]
+  saldos.forEach(r => {
+    const i = chaves.indexOf(r.Mes); if (i < 0) return;
+    const g = grupoDaLinha(r.Origem, r.Filial);
+    const porGrupo = valores[r.Conta] || (valores[r.Conta] = {});
+    (porGrupo[g] || (porGrupo[g] = new Array(meses.length).fill(0)))[i] += Number(r.Valor) || 0;  // decimal chega como texto no JSON do Report
+  });
+  const [a0, m0] = meses[0], [a1, m1] = meses[meses.length - 1];
+  const agora = new Date(), dd = n => String(n).padStart(2, "0");
+  return {
+    geradoEm: `${dd(agora.getDate())}/${dd(agora.getMonth() + 1)}/${agora.getFullYear()} ${dd(agora.getHours())}:${dd(agora.getMinutes())}`,
+    periodo: a0 === a1 ? `${MESES_NOME[m0-1]} – ${MESES_NOME[m1-1]} / ${a1}` : `${MESES_NOME[m0-1]}/${a0} – ${MESES_NOME[m1-1]}/${a1}`,
+    inicio: chaves[0], fim: chaves[chaves.length - 1],
+    empresa: CFG.empresa || "", modelo: CFG.modelo,
+    meses: meses.map(([a, m]) => `${MESES_ABREV[m-1]}/${String(a).slice(2)}`),
+    mesesNome: meses.map(([a, m]) => `${MESES_NOME[m-1]}/${a}`),
+    mesesChave: chaves,
+    grupos: [Object.assign({chave: "base", rotulo: "HL Distribuição", detalhe: "demais filiais"}, CFG.grupo_base, {filiais: []}),
+             ...(CFG.grupos || []).map(g => ({chave: g.chave, rotulo: g.rotulo, detalhe: g.detalhe, filiais: g.filiais}))],
+    linhasChave: CFG.linhas_chave,
+    linhas,
+    contas: contas.map(c => ({
+      codigo: c.Conta, nome: c.Nome, linha: c.CatId, ordem: c.Ordem || 0,
+      valores: Object.fromEntries(Object.entries(valores[c.Conta] || {}).map(([g, vs]) => [g, vs.map(v => Math.round(v * 100) / 100)])),
+    })),
+  };
+}
+function mesAnterior(){ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1); return d; }
+const ym = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+function periodoNosCampos(ini, fim){
+  if (ini) document.getElementById("per-inicio").value = ini;
+  if (fim) document.getElementById("per-fim").value = fim;
+}
+function statusGerar(txt, erro){
+  const el = document.getElementById("gerar-status");
+  el.textContent = txt || ""; el.classList.toggle("erro", !!erro);
+}
+function lerPeriodo(){
+  const ini = document.getElementById("per-inicio").value, fim = document.getElementById("per-fim").value;
+  if (!ini || !fim){ statusGerar("Informe o mês inicial e o final.", true); return null; }
+  if (fim < ini){ statusGerar("O mês final é anterior ao inicial.", true); return null; }
+  const max = CFG.max_meses || 24;
+  if (mesesDoPeriodo(ini, fim).length > max){ statusGerar(`Período máximo de ${max} meses.`, true); return null; }
+  return {ini, fim};
+}
+let gerando = false;
+async function gerarPeriodo(){
+  if (gerando) return;
+  const p = lerPeriodo(); if (!p) return;
+  gerando = true;
+  document.querySelectorAll(".gerar-btn").forEach(b => b.disabled = true);
+  statusGerar("Consultando o banco…");
+  try{
+    const j = await montarDados(p.ini, p.fim);
+    state.collapsed.clear();
+    carregar(j);
+    fullRender();
+    statusGerar(`Gerado em ${j.geradoEm}.`);
+  }catch(e){
+    statusGerar("Erro: " + e.message, true);
+  }finally{
+    gerando = false;
+    document.querySelectorAll(".gerar-btn").forEach(b => b.disabled = false);
+  }
+}
+// Cópia estática com os dados da tela, para enviar (as caixas Especial/Serviço seguem funcionando nela).
+function baixarHtml(){
+  if (!D){ statusGerar("Gere um período antes de baixar.", true); return; }
+  // A própria página (com a configuração) + os dados embutidos: abre sem login e sem consultar o banco.
+  fetch(location.href).then(r => r.text()).then(pagina => {
+    const marca = "/*__DADOS__*/null";
+    if (!pagina.includes(marca)) throw new Error("página inesperada — recarregue e tente de novo");
+    const js = JSON.stringify(D).replace(/<\//g, "<\\/");
+    const html = pagina.replace(marca, () => js)
+      .replace("<title>DRE · Diretoria</title>", () => `<title>DRE · ${escapeHtml(D.periodo)}</title>`);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([html], {type: "text/html;charset=utf-8"}));
+    a.download = `DRE_Diretoria_${D.inicio}_a_${D.fim}.html`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  }).catch(e => statusGerar("Erro ao baixar: " + e.message, true));
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("barra-gerar").style.display = NO_SERVIDOR ? "" : "none";
+  document.getElementById("btn-voltar").style.display = NO_SERVIDOR ? "" : "none";
+  if (D){ carregar(D); fullRender(); }
+  else {
+    const fim = mesAnterior(), ini = new Date(fim.getFullYear(), 0, 1);
+    periodoNosCampos(ym(ini), ym(fim));
+  }
+});
+</script>
+</body>
+</html>

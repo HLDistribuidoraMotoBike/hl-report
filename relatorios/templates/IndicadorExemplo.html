@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block title %}{{ config.titulo or nome }}{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .topbar { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+    .page-title { font-family:var(--font-title); font-size:var(--text-xl); font-weight:800; flex:1; }
+    .badge-tipo {
+        font-size:var(--text-xs); padding:3px 10px; border-radius:20px;
+        background:rgba(0,212,170,.12); color:var(--accent);
+        border:1px solid rgba(0,212,170,.2); font-weight:500;
+    }
+    .filtros-panel {
+        background:var(--card); border:1px solid var(--border);
+        border-radius:10px; padding:20px 24px; margin-bottom:24px;
+    }
+    .filtros-label { font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:14px; font-weight:600; }
+    .filtros-grid  { display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; }
+    .filtro-group  { display:flex; flex-direction:column; min-width:160px; flex:1; }
+    .filtros-actions { display:flex; gap:8px; align-items:flex-end; }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+    .kpi-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex; flex-direction: column; gap: 8px;
+        transition: border-color .2s;
+    }
+    .kpi-card:hover { border-color: var(--accent); }
+    .kpi-label { font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing:.08em; font-weight:600; }
+    .kpi-valor { font-family: var(--font-mono); font-size: 24px; font-weight: 700; color: var(--accent); }
+    .kpi-sub   { font-size: var(--text-xs); color: var(--muted); }
+
+    .estado { text-align:center; padding:60px 20px; color:var(--muted); }
+    .estado-icon { font-size:40px; margin-bottom:12px; }
+    .spinner {
+        width:32px; height:32px; border:3px solid var(--border);
+        border-top-color:var(--accent); border-radius:50%;
+        animation:spin .8s linear infinite; margin:0 auto 12px;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .erro-box {
+        background:rgba(255,71,87,.08); border:1px solid rgba(255,71,87,.3);
+        border-radius:8px; padding:16px 20px; color:var(--danger);
+    }
+
+    /* ── DICA ── */
+    .dica {
+        background: rgba(0,153,255,.06);
+        border: 1px solid rgba(0,153,255,.2);
+        border-radius:8px; padding:16px 20px;
+        color:var(--accent2); font-size:var(--text-sm);
+        margin-bottom: 24px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="topbar">
+    <a href="/" class="btn">← Voltar</a>
+    <h1 class="page-title">{{ config.titulo or nome }}</h1>
+    <span class="badge-tipo">📊 Indicador</span>
+    <span class="badge badge-info" id="status-badge" style="display:none"></span>
+</div>
+
+<!-- Filtros dinâmicos -->
+<div class="filtros-panel">
+    <div class="filtros-label">⚙ Filtros</div>
+    <div class="filtros-grid" id="filtros-container"></div>
+</div>
+
+<div class="dica">
+    💡 Este é um template de exemplo para relatórios do tipo <strong>Indicador</strong>.
+    Crie seu próprio template em <code>report_template/NomeDoRelatorio.html</code>
+    e defina <code>"tipo": "indicador"</code> e <code>"template": "NomeDoRelatorio.html"</code>
+    no arquivo <code>report_config/</code> correspondente.
+</div>
+
+<!-- KPIs -->
+<div id="resultado" style="display:none">
+    <div class="kpi-grid" id="kpi-grid"></div>
+    <!-- Adicione aqui gráficos, tabelas e outros elementos customizados -->
+</div>
+
+<div id="estado-area">
+    <div class="estado">
+        <div class="estado-icon">📊</div>
+        <div>Configure os filtros e clique em <strong>Executar</strong></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const REL_ID = {{ rel_id | tojson }};
+const CONFIG = {{ config | tojson }};
+const FILTROS_DEF = CONFIG.filtros || [];
+
+// Renderiza filtros
+(function() {
+    const container = document.getElementById('filtros-container');
+    FILTROS_DEF.forEach(f => {
+        const group = document.createElement('div');
+        group.className = 'filtro-group';
+        const label = document.createElement('label');
+        label.textContent = f.label;
+        group.appendChild(label);
+        let input;
+        if (f.tipo === 'date') {
+            input = document.createElement('input'); input.type = 'date';
+            const hoje = new Date();
+            if (f.id === 'data_ini') input.value = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().slice(0,10);
+            if (f.id === 'data_fim') input.value = hoje.toISOString().slice(0,10);
+        } else if (f.tipo === 'select') {
+            input = document.createElement('select');
+            const opt = document.createElement('option'); opt.value=''; opt.textContent='Todos';
+            input.appendChild(opt);
+            (f.opcoes||[]).forEach(op => {
+                const o = document.createElement('option'); o.value=op.value??op; o.textContent=op.label??op; input.appendChild(o);
+            });
+        } else {
+            input = document.createElement('input'); input.type = f.tipo==='number'?'number':'text';
+            input.placeholder = f.placeholder || 'Todos';
+        }
+        input.id = 'f_' + f.id;
+        input.addEventListener('keydown', e => { if(e.key==='Enter') executar(); });
+        group.appendChild(input);
+        container.appendChild(group);
+    });
+    const actions = document.createElement('div');
+    actions.className = 'filtros-actions';
+    actions.innerHTML = `<button class="btn btn-primary" id="btn-exec" onclick="executar()">▶ Executar</button>
+                         <button class="btn" onclick="limpar()">✕ Limpar</button>`;
+    container.appendChild(actions);
+})();
+
+async function executar() {
+    const filtros = {};
+    FILTROS_DEF.forEach(f => { const el = document.getElementById('f_'+f.id); if(el) filtros[f.id]=el.value||''; });
+    const params = new URLSearchParams(filtros);
+
+    document.getElementById('estado-area').style.display = 'block';
+    document.getElementById('resultado').style.display   = 'none';
+    document.getElementById('estado-area').innerHTML = `<div class="estado"><div class="spinner"></div><div>Executando...</div></div>`;
+    document.getElementById('btn-exec').disabled = true;
+
+    try {
+        const res  = await fetch(`/api/executar/${encodeURIComponent(REL_ID)}?${params}`);
+        const json = await res.json();
+        if (!json.ok) {
+            document.getElementById('estado-area').innerHTML = `<div class="erro-box">⚠ ${json.erro}</div>`;
+            return;
+        }
+
+        // ── Exemplo: renderiza KPIs com totais das colunas numéricas ──
+        // Personalize esta parte no seu template de indicador
+        const numCols = json.colunas.filter(c => json.data.length > 0 && typeof json.data[0][c] === 'number');
+        const grid = document.getElementById('kpi-grid');
+        grid.innerHTML = '';
+
+        if (numCols.length === 0) {
+            grid.innerHTML = `<div style="color:var(--muted);font-size:var(--text-sm)">
+                Nenhuma coluna numérica encontrada. Personalize este template.</div>`;
+        } else {
+            numCols.slice(0,8).forEach(col => {
+                const total = json.data.reduce((s,r) => s + (parseFloat(r[col])||0), 0);
+                grid.innerHTML += `
+                    <div class="kpi-card">
+                        <div class="kpi-label">${col}</div>
+                        <div class="kpi-valor">${total.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+                        <div class="kpi-sub">${json.total} registros</div>
+                    </div>`;
+            });
+        }
+
+        document.getElementById('resultado').style.display   = 'block';
+        document.getElementById('estado-area').style.display = 'none';
+        const b = document.getElementById('status-badge');
+        b.textContent = json.total + ' registros'; b.className='badge badge-ok'; b.style.display='inline-flex';
+
+    } catch(e) {
+        document.getElementById('estado-area').innerHTML = `<div class="erro-box">⚠ Erro: ${e.message}</div>`;
+    } finally {
+        document.getElementById('btn-exec').disabled = false;
+    }
+}
+
+function limpar() {
+    FILTROS_DEF.forEach(f => { const el=document.getElementById('f_'+f.id); if(el) el.value=''; });
+    document.getElementById('resultado').style.display   = 'none';
+    document.getElementById('estado-area').style.display = 'block';
+    document.getElementById('estado-area').innerHTML = `<div class="estado"><div class="estado-icon">📊</div>
+        <div>Configure os filtros e clique em <strong>Executar</strong></div></div>`;
+    document.getElementById('status-badge').style.display='none';
+}
+</script>
+{% endblock %}
