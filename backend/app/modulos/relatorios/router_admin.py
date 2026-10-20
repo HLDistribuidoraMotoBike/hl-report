@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from hlcore import acesso
 from hlcore.auditoria import registrar
 from hlcore.auth import verificar_admin
 from hlcore.database import get_db
@@ -37,6 +38,12 @@ class TemplateIn(BaseModel):
     novo: bool = False
 
 
+def _avisar_acesso() -> None:
+    """Acesso central: as pastas são os recursos — pasta nova/excluída vai para o HL Acesso na hora."""
+    from app.permissoes import PERMISSOES
+    acesso.registrar_app(PERMISSOES, "HL Report")
+
+
 @router_admin.get("/arvore")
 def arvore(_=Depends(verificar_admin)):
     return arquivos.arvore()
@@ -46,6 +53,7 @@ def arvore(_=Depends(verificar_admin)):
 def criar_pasta(data: PastaIn, db: Session = Depends(get_db), user=Depends(verificar_admin)):
     nome = arquivos.criar_pasta(data.nome)
     registrar(db, user["display_name"], "relatorio_pasta_criada", nome)
+    _avisar_acesso()
     return {"nome": nome}
 
 
@@ -53,6 +61,7 @@ def criar_pasta(data: PastaIn, db: Session = Depends(get_db), user=Depends(verif
 def excluir_pasta(nome: str, db: Session = Depends(get_db), user=Depends(verificar_admin)):
     arquivos.excluir_pasta(nome)
     registrar(db, user["display_name"], "relatorio_pasta_excluida", nome)
+    _avisar_acesso()
     return {"ok": True}
 
 

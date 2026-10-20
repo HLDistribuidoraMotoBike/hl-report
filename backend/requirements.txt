@@ -1,7 +1,7 @@
 # hlcore (peças comuns dos apps HL — repositório hl-core) NÃO vem do PyPI; instalar à parte:
 #   dev: pip install -e ..\..\hl-core\python
 #   VM:  pip install hlcore-<versão>-py3-none-any.whl   (ver docs/PUBLICACAO.md)
-# Versão exigida por esta versão do HL Report: hlcore 0.6.0
+# Versão exigida por esta versão do HL Report: hlcore 0.7.0
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 sqlalchemy==2.0.35

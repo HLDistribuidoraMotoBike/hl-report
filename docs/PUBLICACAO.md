@@ -60,6 +60,8 @@ DESLIGADO até a fase 2.
 
 ## Por versão
 
+- **0.7.0**: exige **hlcore 0.7.0**; sem migração. Para ligar ao HL Acesso (publicado antes — `hl-core/acesso/PUBLICACAO.md`):
+  `ACESSO_URL`, `ACESSO_URL_INTERNA`, `ACESSO_APP`, `ACESSO_SEGREDO`, `APP_URL` no `.env`. Sem elas, login local.
 - **0.6.0**: sem migração; `relatorios\` inteira (DRE.sql foi para `_dre\Saldos.sql`, saiu `templates\DRE.html`).
   A pasta Diretoria continua liberada só para quem já tinha (Admin → Grupos).
 - **0.5.0**: exige **hlcore 0.6.0** (wheel novo); `relatorios\` inteira (saiu a pasta Comercial — Simulador foi

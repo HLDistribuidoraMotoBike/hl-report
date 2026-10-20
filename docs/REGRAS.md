@@ -81,3 +81,10 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
   sem conta de contrapartida), até 500 na tela (a busca procura em todos); lançamentos com documento, filial,
   histórico da linha e observação (até 2.000).
 - Exportar Excel (o que está na tela: meses, empresas, zeradas) e Imprimir/PDF.
+
+## Acesso central (HL Acesso) — desde a 0.7.0
+
+Com `ACESSO_URL` no `.env`, login, grupos e sessões ficam no **HL Acesso** (hl-core, porta 8010): um login para
+todos os apps HL, cadastro único grupos do AD × apps, sair em um app encerra em todos. Este app informa ao HL Acesso
+seus papéis e recursos ao subir (as pastas — pasta nova é avisada na hora); a tela Admin vira um atalho para o HL Acesso. Sem `ACESSO_URL`, vale o
+login e os grupos locais descritos acima.

@@ -3,6 +3,13 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.7.0 — 20/10/2026 — Acesso central (HL Acesso)
+
+Pedido do usuário: gestão de acesso num lugar só. Com `ACESSO_URL` no `.env` o Report usa o **HL Acesso** (hlcore
+0.7.0): login único, grupos × apps e sessões centrais. O Report registra papéis e **pastas** no HL Acesso ao subir e
+avisa na hora quando uma pasta é criada/excluída. Cenário novo `acesso_central` (HL Acesso simulado). Os grupos do
+Report vão para o HL Acesso pelo `importar_grupos.py` de lá. Sem `ACESSO_URL`, tudo como antes.
+
 ### 0.6.0 — 20/10/2026 — DRE em React (etapa 3 concluída) + filtro de encerramento
 
 Decisões do usuário: migrar a DRE; trocar "Baixar HTML" por **Exportar Excel + Imprimir/PDF**; visual dos apps na tela

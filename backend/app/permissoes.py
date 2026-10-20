@@ -14,4 +14,18 @@ PAPEIS = ("admin", "usuario")
 # admin cadastra em Admin → Grupos.
 GRUPOS_INICIAIS = (("Suporte-hl", "admin"), ("Domain Admins", "admin"), ("Administradores", "admin"))
 
-PERMISSOES = Permissoes(papeis=PAPEIS, sessao={"usuario": "multipla"})
+ROTULOS = [
+    {"value": "admin", "label": "Administrador", "cor": "#6c5ce7", "bg": "#f0eeff",
+     "ajuda": "Todos os relatórios, Admin e Configurações (SQL, templates, e-mails agendados)"},
+    {"value": "usuario", "label": "Usuário", "cor": "#00b894", "bg": "#e8faf5", "ajuda": "Os relatórios das pastas marcadas"},
+]
+
+
+def recursos() -> list[dict]:
+    """Cada pasta de relatórios é um recurso (lista viva: pasta nova = recurso novo)."""
+    from app.modulos.relatorios import catalogo
+    return [{"key": p, "label": p, "desc": f"Relatórios da pasta {p}"} for p in catalogo.pastas()]
+
+
+# rótulos e pastas também vão para o HL Acesso (acesso central) — no startup e ao criar/excluir pasta
+PERMISSOES = Permissoes(papeis=PAPEIS, sessao={"usuario": "multipla"}, rotulos=ROTULOS, catalogo=recursos)

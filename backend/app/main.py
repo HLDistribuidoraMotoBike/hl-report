@@ -41,7 +41,7 @@ CONFIGURACOES = hana.CONFIGURACOES + mailer.CONFIGURACOES + [
 ]
 
 # versão: só aqui — o frontend lê este número na compilação (vite.config.js)
-app = FastAPI(title="HL Report", version="0.6.0")
+app = FastAPI(title="HL Report", version="0.7.0")
 erros.registrar_handlers(app)
 app.include_router(acesso.rotas(PERMISSOES), prefix=API)
 app.include_router(configuracoes.rotas(), prefix=API)
@@ -81,6 +81,7 @@ async def startup_event():
     migracoes.exigir_atualizado(ALEMBIC_INI)
     configuracoes.semear(CONFIGURACOES)
     _semear_grupos()
+    acesso.registrar_app(PERMISSOES, "HL Report")   # acesso central (HL Acesso): papéis e pastas deste app
     db = SessionLocal()
     try:
         email_service.sincronizar(db)

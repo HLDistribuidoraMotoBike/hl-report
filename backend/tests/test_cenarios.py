@@ -19,7 +19,7 @@ CENARIOS = sorted((Path(__file__).parent / "cenarios").glob("cenario_*.py"))
 
 
 def _rodar(args, banco, extra_env=None):
-    env = {**os.environ, "PYTHONIOENCODING": "utf-8", "ALLOW_LOCAL_AUTH": "true",
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8", "ALLOW_LOCAL_AUTH": "true", "ACESSO_URL": "",
            "DATABASE_URL": f"sqlite:///{banco.as_posix()}", **(extra_env or {})}
     return subprocess.run([sys.executable, *args], cwd=BACKEND, env=env, capture_output=True, text=True,
                           encoding="utf-8", errors="replace", timeout=600)
