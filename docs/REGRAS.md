@@ -30,3 +30,27 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
 - **Indicador** (DRE, Rentabilidade, Simulador...): a página própria em `relatorios/templates/`, aberta num iframe
   dentro do menu. O endereço leva um passe de 12 h válido só para aquela página (só o HTML, sem dados); as chamadas
   da página a `/api` usam o login da tela.
+
+## 3. Administração (`Configurações`, só administrador)
+
+- **Relatórios**: cria/exclui pasta (nome com `_` no começo ou "Geral" é reservado; só exclui pasta vazia) e
+  relatório (SQL + configuração; sem configuração vale o padrão). Consulta auxiliar = subpasta `_nome` (fora do
+  menu). **Testar** roda o SQL do editor, mesmo sem salvar, e mostra até 200 linhas.
+- **Templates**: páginas de indicador (`relatorios/templates`) e modelos de e-mail (`relatorios/email/templates`).
+- Tudo grava direto na pasta de relatórios do servidor e vai para o log de ações. Em produção, o que for editado
+  pela tela precisa voltar para o git (a publicação confere a diferença antes de copiar).
+
+## 4. E-mails agendados (`app/modulos/email`)
+
+- Definição (código): `relatorios/email/emails.json` — consulta, filtros (datas dinâmicas HOJE, HOJE-n, MES_INICIO...),
+  modelo, processador, anexo Excel (`sql_anexo`), imagens. Formato em [relatorios/README.md](../relatorios/README.md).
+- Operação (tela Configurações → E-mails agendados): ligado/desligado, horário, dias, destinatários e assunto. Para
+  ligar precisa de dias, destinatários e assunto.
+- **Agendador**: só envia com `EMAIL_AGENDADOR = ligado` (Configurações → API → E-mail). Um envio agendado por dia
+  por e-mail, a partir do horário e até 30 min depois (se o servidor estava parado); envio com erro não repete
+  sozinho no mesmo dia (use Disparar agora).
+- **Prévia** monta com os dados de agora e não envia. **Envio de teste** vai só para o endereço digitado, com
+  "[TESTE]" no assunto. **Disparar agora** vai para os destinatários cadastrados.
+- `EMAIL_SOMENTE_TESTE=true` (desenvolvimento): só o envio de teste funciona — o SMTP e os destinatários são os reais.
+- Todo envio fica no histórico (quem, quando, tipo, status, linhas, anexo, erro). SMTP: STARTTLS na porta
+  configurada; se falhar, SSL na 465.

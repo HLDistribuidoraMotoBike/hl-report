@@ -50,3 +50,31 @@ HTML completo montado com Jinja: variáveis `nome`, `rel_id` e `config` (`{{ con
 `fetch('/api/executar/<Pasta>/<Nome>?filtro=...')` → `{ok, total, colunas, data}` ou `{ok: false, erro}`. O app abre a
 página num iframe dentro do menu e cuida do login dessas chamadas; links `href="/"` ("← Voltar") somem dentro do app.
 Um template pode usar `{% extends "base.html" %}` (base do Report antigo, sem cabeçalho).
+
+## E-mails agendados (`email/`)
+
+```
+email/emails.json            definição de cada e-mail: {chave: {...}}
+email/templates/*.html       modelos (Jinja, sem autoescape)
+email/processadores/*.py     funções que montam o contexto do modelo
+email/assets/                imagens do corpo (logo)
+```
+
+```json
+"notas_nao_expedidas": {
+  "titulo": "Notas não expedidas",
+  "sql": "Logistica/Notas Nao Expedidas - Resumo",
+  "filtros": {"data_ini": "HOJE-1"},
+  "template": "template_base.html",
+  "processador": "notas_nao_expedidas.preparar_contexto",
+  "anexo_excel": true, "sql_anexo": "Logistica/Notas Nao Expedidas",
+  "imagens_inline": {"logo_hl": "assets/logo_hl.png"}
+}
+```
+
+- Filtros: valor fixo ou data dinâmica `HOJE`, `HOJE-n`, `HOJE+n`, `MES_INICIO`, `MES_FIM`, `MES_ANT_INI`, `MES_ANT_FIM`.
+- Processador `arquivo.funcao(dados, definicao, filtros)` → contexto do modelo. Sem processador: `titulo`, `periodo`,
+  `data_geracao`, `subtitulo_tabela`, `kpis`, `colunas`, `dados` (os três últimos podem vir da definição).
+- Nas linhas do e-mail: data = "dd/mm/aaaa", vazio = "", DECIMAL continua Decimal (o processador converte).
+- Anexo Excel: linhas de `sql_anexo` (ou as do corpo). Imagem no modelo: `<img src="cid:logo_hl">`.
+- Liga/desliga, horário, dias, destinatários e assunto NÃO ficam aqui: tela Configurações → E-mails agendados.

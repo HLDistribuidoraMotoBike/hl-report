@@ -1,0 +1,37 @@
+{
+  "rentabilidade_ecommerce": {
+    "filtros": {
+      "data_fim": "HOJE-1",
+      "data_ini": "HOJE-1",
+      "marca": ""
+    },
+    "processador": "rentabilidade_ecommerce.preparar_contexto",
+    "sql": "Comercial - Ecommerce/RentabilidadeEmailDiario",
+    "template": "rentabilidade_ecommerce.html",
+    "titulo": "Rentabilidade Ecommerce"
+  },
+  "rentabilidade_consolidado": {
+    "anexo_excel": true,
+    "filtros": {
+      "data_fim": "HOJE-1",
+      "data_ini": "HOJE-1"
+    },
+    "imagens_inline": {
+      "logo_hl": "assets/logo_hl.png"
+    },
+    "processador": "rentabilidade_consolidado.preparar_contexto",
+    "sql": "Consolidado/Rentabilidade Consolidada",
+    "sql_anexo": "Consolidado/Rentabilidade Completa",
+    "template": "rentabilidade_consolidado.html",
+    "titulo": "Rentabilidade Consolidada"
+  },
+  "notas_nao_expedidas": {
+    "anexo_excel": true,
+    "filtros": {},
+    "processador": "notas_nao_expedidas.preparar_contexto",
+    "sql": "Logistica/Notas Nao Expedidas - Resumo",
+    "sql_anexo": "Logistica/Notas Nao Expedidas",
+    "template": "template_base.html",
+    "titulo": "Notas não expedidas"
+  }
+}

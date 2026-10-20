@@ -1,9 +1,13 @@
-import { createContext, lazy, Suspense, useContext, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
 import { AuthProvider, AvisoNovaVersao, Layout, Login, Admin, Configuracoes, RotaPrivada, useAuth, GRUPOS_INTEGRACOES } from '@hl/ui'
-import { listarPastas, listarRelatorios, rotaDoRelatorio } from './modulos/relatorios/api'
+import { listarPastas, rotaDoRelatorio } from './modulos/relatorios/api'
+import { CatalogoProvider, useCatalogo } from './catalogo'
 
 const Relatorio = lazy(() => import('./modulos/relatorios/Relatorio'))
+const AdminRelatorios = lazy(() => import('./modulos/admin/Relatorios'))
+const AdminTemplates = lazy(() => import('./modulos/admin/Templates'))
+const AdminEmail = lazy(() => import('./modulos/admin/Email'))
 
 const SISTEMA = 'HL Report'
 
@@ -13,31 +17,22 @@ const PAPEIS = [
   { value: 'usuario', label: 'Usuário',       cor: '#00b894', bg: '#e8faf5' },
 ]
 
-// Configurações → API: conexão com o SAP HANA + atalhos para os outros apps
+// Configurações → API: conexão com o SAP HANA, e-mail (SMTP + agendador) e atalhos para os outros apps
 const GRUPOS_CONFIG = {
   hana: { label: 'SAP HANA', descricao: 'Conexão direta com o banco do SAP (só leitura) — todos os relatórios usam' },
+  smtp: { label: 'E-mail', descricao: 'SMTP dos e-mails agendados e o agendador (ligado | desligado). Ligue o agendador SÓ depois de desligar o do Report antigo — senão o e-mail sai em dobro' },
   apps: GRUPOS_INTEGRACOES.apps,
 }
 
 const CONFIGURACOES = {
   key: 'configuracoes', label: 'Configurações',
-  items: [{ label: 'API', path: '/configuracoes/api' }],
+  items: [
+    { label: 'Relatórios', path: '/configuracoes/relatorios' },
+    { label: 'Templates', path: '/configuracoes/templates' },
+    { label: 'E-mails agendados', path: '/configuracoes/email' },
+    { label: 'API', path: '/configuracoes/api' },
+  ],
 }
-
-// Catálogo (pastas → relatórios que o usuário pode ver): monta o menu e a tela inicial
-const CatalogoContext = createContext({ catalogo: null })
-
-function CatalogoProvider({ children }) {
-  const { token } = useAuth()
-  const [catalogo, setCatalogo] = useState(null)
-  useEffect(() => {
-    if (!token) { setCatalogo(null); return }
-    listarRelatorios().then(r => setCatalogo(r.data)).catch(() => setCatalogo([]))
-  }, [token])
-  return <CatalogoContext.Provider value={{ catalogo }}>{children}</CatalogoContext.Provider>
-}
-
-const useCatalogo = () => useContext(CatalogoContext).catalogo
 
 function Inicio() {
   const { user } = useAuth()
@@ -106,6 +101,9 @@ export default function App() {
             <Route path="/" element={<Pagina><Inicio /></Pagina>} />
             <Route path="/r/*" element={<Pagina><Relatorio /></Pagina>} />
             <Route path="/admin" element={<Pagina admin><AdminReport /></Pagina>} />
+            <Route path="/configuracoes/relatorios" element={<Pagina admin><AdminRelatorios /></Pagina>} />
+            <Route path="/configuracoes/templates" element={<Pagina admin><AdminTemplates /></Pagina>} />
+            <Route path="/configuracoes/email" element={<Pagina admin><AdminEmail /></Pagina>} />
             <Route path="/configuracoes/api" element={<Pagina admin><Configuracoes grupos={GRUPOS_CONFIG} /></Pagina>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

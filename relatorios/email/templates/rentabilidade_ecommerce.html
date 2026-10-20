@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ titulo }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f2f5;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f2f5;padding:32px 0;">
+  <tr><td align="center">
+  <table width="900" cellpadding="0" cellspacing="0" border="0" style="max-width:900px;width:100%;">
+
+    <!-- ── Header ── -->
+    <tr>
+      <td style="background:#0f172a;border-radius:12px 12px 0 0;padding:24px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td>
+              <div style="font-size:10px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">HLMotobike · Ecommerce</div>
+              <div style="font-size:20px;font-weight:700;color:#ffffff;">{{ titulo }}</div>
+              <div style="font-size:13px;color:#475569;margin-top:4px;">Referência: {{ periodo }}</div>
+            </td>
+            <td align="right" style="vertical-align:top;">
+              <div style="background:#1e293b;border-radius:8px;padding:10px 14px;display:inline-block;text-align:center;">
+                <div style="font-size:10px;color:#64748b;margin-bottom:2px;">Gerado em</div>
+                <div style="font-size:12px;color:#94a3b8;font-weight:600;">{{ data_geracao }}</div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── KPIs ── -->
+    <tr>
+      <td style="background:#ffffff;padding:20px 32px 8px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            {% for kpi in kpis %}
+            <td style="padding:0 {% if not loop.last %}8px{% else %}0{% endif %} 12px 0;width:25%;">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;">
+                <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;white-space:nowrap;">{{ kpi.label }}</div>
+                <div style="font-size:22px;font-weight:700;color:{{ kpi.cor }};white-space:nowrap;">{{ kpi.valor }}</div>
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── Tabelas lado a lado ── -->
+    <tr>
+      <td style="background:#ffffff;padding:8px 32px 28px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+
+            <!-- Tabela Decrescente -->
+            <td width="48%" style="vertical-align:top;padding-right:8px;">
+              <div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;text-transform:uppercase;letter-spacing:1px;">
+                ▼ Receita por Marca
+              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                <tr style="background:#0f172a;">
+                  <th style="padding:8px 10px;text-align:left;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Marca</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Margem</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Receita</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Anunciado</th>
+                </tr>
+                {% for m in marcas_desc %}
+                <tr style="background:{{ '#f8fafc' if loop.index is odd else '#ffffff' }};border-bottom:1px solid #f1f5f9;">
+                  <td style="padding:8px 10px;font-size:12px;color:#0f172a;font-weight:600;">{{ m.marca }}</td>
+                  <td style="padding:8px 10px;font-size:12px;color:{{ '#16a34a' if m.margem[0] != '-' else '#dc2626' }};text-align:right;font-weight:700;">{{ m.margem }}</td>
+                  <td style="padding:8px 10px;font-size:12px;color:#475569;text-align:right;">{{ m.valor }}</td>
+                  <td style="padding:8px 10px;font-size:12px;color:#475569;text-align:right;">{{ m.anunciado }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" style="padding:16px;text-align:center;color:#94a3b8;font-size:12px;">Sem dados</td></tr>
+                {% endfor %}
+              </table>
+            </td>
+
+            <!-- Espaçador -->
+            <td width="4%"></td>
+
+            <!-- Tabela Crescente -->
+            <td width="48%" style="vertical-align:top;padding-left:8px;">
+              <div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;text-transform:uppercase;letter-spacing:1px;">
+                ▲ Margem por Marca
+              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                <tr style="background:#0f172a;">
+                  <th style="padding:8px 10px;text-align:left;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Marca</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Margem</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Receita</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:10px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Anunciado</th>
+                </tr>
+                {% for m in marcas_cresc %}
+                <tr style="background:{{ '#f8fafc' if loop.index is odd else '#ffffff' }};border-bottom:1px solid #f1f5f9;">
+                  <td style="padding:8px 10px;font-size:12px;color:#0f172a;font-weight:600;">{{ m.marca }}</td>
+                  <td style="padding:8px 10px;font-size:12px;color:{{ '#16a34a' if m.margem[0] != '-' else '#dc2626' }};text-align:right;font-weight:700;">{{ m.margem }}</td>
+                  <td style="padding:8px 10px;font-size:12px;color:#475569;text-align:right;">{{ m.valor }}</td>
+                  <td style="padding:8px 10px;font-size:12px;color:#475569;text-align:right;">{{ m.anunciado }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" style="padding:16px;text-align:center;color:#94a3b8;font-size:12px;">Sem dados</td></tr>
+                {% endfor %}
+              </table>
+            </td>
+
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── Footer ── -->
+    <tr>
+      <td style="background:#0f172a;border-radius:0 0 12px 12px;padding:16px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="font-size:11px;color:#475569;">Gerado automaticamente — Sistema de Relatórios HLMotobike</td>
+            <td align="right" style="font-size:11px;color:#334155;">Não responda este email.</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+  </table>
+  </td></tr>
+</table>
+
+</body>
+</html>

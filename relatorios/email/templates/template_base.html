@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ titulo }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f2f5;font-family:Arial,Helvetica,sans-serif;">
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f2f5;padding:32px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Container -->
+        <table width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#0f172a;border-radius:12px 12px 0 0;padding:28px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <div style="font-size:11px;color:#94a3b8;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">HLMotobike</div>
+                    <div style="font-size:22px;font-weight:700;color:#ffffff;">{{ titulo }}</div>
+                    <div style="font-size:13px;color:#64748b;margin-top:6px;">{{ periodo }}</div>
+                  </td>
+                  <td align="right" style="vertical-align:top;">
+                    <div style="background:#1e293b;border-radius:8px;padding:10px 16px;display:inline-block;">
+                      <div style="font-size:11px;color:#64748b;margin-bottom:2px;">Gerado em</div>
+                      <div style="font-size:13px;color:#94a3b8;font-weight:600;">{{ data_geracao }}</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- KPIs -->
+          {% if kpis %}
+          <tr>
+            <td style="background:#ffffff;padding:24px 36px 8px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  {% for kpi in kpis %}
+                  <td width="{{ (100 / kpis|length)|int }}%" style="padding:0 8px 16px {% if loop.first %}0{% elif loop.last %}0{% else %}8px{% endif %} {% if loop.first %}0{% else %}8px{% endif %};">
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;">
+                      <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">{{ kpi.label }}</div>
+                      <div style="font-size:24px;font-weight:700;color:{{ kpi.cor|default('#0f172a') }};">{{ kpi.valor }}</div>
+                      {% if kpi.variacao is defined %}
+                      <div style="font-size:12px;color:{{ '#16a34a' if kpi.variacao >= 0 else '#dc2626' }};margin-top:4px;">
+                        {{ '▲' if kpi.variacao >= 0 else '▼' }} {{ kpi.variacao|abs }}% vs mês anterior
+                      </div>
+                      {% endif %}
+                    </div>
+                  </td>
+                  {% endfor %}
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {% endif %}
+
+          <!-- Tabela de dados -->
+          <tr>
+            <td style="background:#ffffff;padding:8px 36px 28px 36px;">
+
+              {% if subtitulo_tabela %}
+              <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #f1f5f9;">
+                {{ subtitulo_tabela }}
+              </div>
+              {% endif %}
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                <!-- Cabeçalho -->
+                <tr style="background:#0f172a;">
+                  {% for col in colunas %}
+                  <th style="padding:11px 14px;text-align:{{ 'right' if col.alinhar_direita else 'left' }};font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;">
+                    {{ col.label }}
+                  </th>
+                  {% endfor %}
+                </tr>
+
+                <!-- Linhas -->
+                {% for row in dados %}
+                <tr style="background:{{ '#f8fafc' if loop.index is odd else '#ffffff' }};border-bottom:1px solid #f1f5f9;">
+                  {% for col in colunas %}
+                  <td style="padding:11px 14px;font-size:13px;color:#334155;text-align:{{ 'right' if col.alinhar_direita else 'left' }};white-space:nowrap;">
+                    {% if col.negrito %}
+                    <strong style="color:#0f172a;">{{ row[col.campo] }}</strong>
+                    {% else %}
+                    {{ row[col.campo] }}
+                    {% endif %}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+
+                {% if not dados %}
+                <tr>
+                  <td colspan="{{ colunas|length }}" style="padding:24px;text-align:center;color:#94a3b8;font-size:13px;">
+                    Nenhum dado encontrado para o período.
+                  </td>
+                </tr>
+                {% endif %}
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0f172a;border-radius:0 0 12px 12px;padding:18px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-size:12px;color:#475569;">
+                    Este email foi gerado automaticamente pelo sistema de relatórios HLMotobike.
+                  </td>
+                  <td align="right" style="font-size:12px;color:#334155;">
+                    Não responda este email.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ titulo }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f2f5;font-family:Arial,Helvetica,sans-serif;">
+
+{% macro tabela_detalhe(coluna_id, linhas) %}
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:10px;">
+  <tr style="background:#0f172a;">
+    <th style="padding:5px 8px;text-align:left;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">{{ coluna_id }}</th>
+    <th style="padding:5px 8px;text-align:right;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">Receita</th>
+    <th style="padding:5px 8px;text-align:right;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">Despesa</th>
+    <th style="padding:5px 8px;text-align:right;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">Custo Merc.</th>
+    <th style="padding:5px 8px;text-align:right;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">Receita Líq.</th>
+    <th style="padding:5px 8px;text-align:right;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">Margem</th>
+    <th style="padding:5px 8px;text-align:right;font-size:9px;color:#94a3b8;letter-spacing:0.5px;text-transform:uppercase;">Vendas</th>
+  </tr>
+  {% for l in linhas %}
+  <tr style="background:{{ '#f8fafc' if loop.index is odd else '#ffffff' }};border-bottom:1px solid #f1f5f9;">
+    <td style="padding:4px 8px;font-size:11px;color:#0f172a;font-weight:600;white-space:nowrap;">{{ l.nome }}</td>
+    <td style="padding:4px 8px;font-size:11px;color:#16a34a;text-align:right;white-space:nowrap;">{{ l.total_receita }}</td>
+    <td style="padding:4px 8px;font-size:11px;color:#dc2626;text-align:right;white-space:nowrap;">{{ l.total_despesa }}</td>
+    <td style="padding:4px 8px;font-size:11px;color:#475569;text-align:right;white-space:nowrap;">{{ l.total_custo }}</td>
+    <td style="padding:4px 8px;font-size:11px;color:#475569;text-align:right;white-space:nowrap;">{{ l.receita_liquida }}</td>
+    <td style="padding:4px 8px;font-size:11px;color:{{ '#16a34a' if l.margem[0] != '-' else '#dc2626' }};text-align:right;font-weight:700;white-space:nowrap;">{{ l.margem }}</td>
+    <td style="padding:4px 8px;font-size:11px;color:#475569;text-align:right;white-space:nowrap;">{{ l.total_vendas }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="7" style="padding:10px;text-align:center;color:#94a3b8;font-size:11px;">Sem dados</td></tr>
+  {% endfor %}
+</table>
+{% endmacro %}
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f2f5;padding:32px 0;">
+  <tr><td align="center">
+  <table width="1320" cellpadding="0" cellspacing="0" border="0" style="max-width:1320px;width:100%;">
+
+    <!-- ── Header ── -->
+    <tr>
+      <td style="background:#0f172a;border-radius:12px 12px 0 0;padding:20px 32px 24px 32px;">
+        <div style="background:#ffffff;border-radius:8px;padding:8px 16px;display:inline-block;margin-bottom:18px;">
+          <img src="cid:logo_hl" width="180" height="20" alt="HL Motobike" style="display:block;border:0;outline:none;">
+        </div>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td>
+              <div style="font-size:10px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">HLMotobike · Consolidado</div>
+              <div style="font-size:20px;font-weight:700;color:#ffffff;">{{ titulo }}</div>
+              <div style="font-size:13px;color:#475569;margin-top:4px;">Base de dados: {{ data_base }}</div>
+            </td>
+            <td align="right" style="vertical-align:top;">
+              <div style="background:#1e293b;border-radius:8px;padding:10px 14px;display:inline-block;text-align:center;">
+                <div style="font-size:10px;color:#64748b;margin-bottom:2px;">Gerado em</div>
+                <div style="font-size:12px;color:#94a3b8;font-weight:600;">{{ data_geracao }}</div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── Resultado por Canal / Setor de Venda ── -->
+    <tr>
+      <td style="background:#ffffff;padding:28px 32px 8px 32px;">
+        <div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;text-transform:uppercase;letter-spacing:1px;">
+          Resultado por Canal / Setor Vend.
+        </div>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+          <tr style="background:#0f172a;">
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Canal / Setor Vend.</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Total Receita</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Total Despesa</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Total Custo Merc.</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">(RE) Receita Líquida</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">(RE) Margem s/ Receita Líquida</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Vendas</th>
+          </tr>
+          {% for c in canais %}
+          <tr style="background:{{ '#f8fafc' if loop.index is odd else '#ffffff' }};border-bottom:1px solid #f1f5f9;">
+            <td style="padding:8px 14px;font-size:13px;color:#0f172a;font-weight:600;">{{ c.nome }}</td>
+            <td style="padding:8px 14px;font-size:13px;color:#16a34a;text-align:right;">{{ c.total_receita }}</td>
+            <td style="padding:8px 14px;font-size:13px;color:#dc2626;text-align:right;">{{ c.total_despesa }}</td>
+            <td style="padding:8px 14px;font-size:13px;color:#334155;text-align:right;">{{ c.total_custo }}</td>
+            <td style="padding:8px 14px;font-size:13px;color:#334155;text-align:right;">{{ c.receita_liquida }}</td>
+            <td style="padding:8px 14px;font-size:13px;color:{{ '#16a34a' if c.margem[0] != '-' else '#dc2626' }};text-align:right;font-weight:700;">{{ c.margem }}</td>
+            <td style="padding:8px 14px;font-size:13px;color:#334155;text-align:right;">{{ c.total_vendas }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" style="padding:20px;text-align:center;color:#94a3b8;font-size:13px;">Sem dados</td></tr>
+          {% endfor %}
+          {% if canal_total %}
+          <tr style="background:#eef2f7;border-top:2px solid #cbd5e1;">
+            <td style="padding:12px 14px;font-size:13px;color:#0f172a;font-weight:700;">{{ canal_total.nome }}</td>
+            <td style="padding:12px 14px;font-size:13px;color:#16a34a;text-align:right;font-weight:700;">{{ canal_total.total_receita }}</td>
+            <td style="padding:12px 14px;font-size:13px;color:#dc2626;text-align:right;font-weight:700;">{{ canal_total.total_despesa }}</td>
+            <td style="padding:12px 14px;font-size:13px;color:#0f172a;text-align:right;font-weight:700;">{{ canal_total.total_custo }}</td>
+            <td style="padding:12px 14px;font-size:13px;color:#0f172a;text-align:right;font-weight:700;">{{ canal_total.receita_liquida }}</td>
+            <td style="padding:12px 14px;font-size:13px;color:{{ '#16a34a' if canal_total.margem[0] != '-' else '#dc2626' }};text-align:right;font-weight:700;">{{ canal_total.margem }}</td>
+            <td style="padding:12px 14px;font-size:13px;color:#0f172a;text-align:right;font-weight:700;">{{ canal_total.total_vendas }}</td>
+          </tr>
+          {% endif %}
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── Créditos Fiscais — Consolidado Geral ── -->
+    <tr>
+      <td style="background:#ffffff;padding:24px 32px 28px 32px;">
+        <div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;text-transform:uppercase;letter-spacing:1px;">
+          Créditos Fiscais — Total Consolidado
+        </div>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td width="50%" style="padding:0 8px 0 0;">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;">
+                <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">(R) Crédito Pirelli</div>
+                <div style="font-size:24px;font-weight:700;color:#0f172a;">{{ credito_pirelli }}</div>
+              </div>
+            </td>
+            <td width="50%" style="padding:0 0 0 8px;">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;">
+                <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">(R) Crédito Presumido</div>
+                <div style="font-size:24px;font-weight:700;color:#0f172a;">{{ credito_presumido }}</div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── Detalhes: Por Venda / Por Marca / Por Vendedor ── -->
+    {% for bloco in detalhes %}
+    <tr>
+      <td style="background:#ffffff;padding:{{ '8px' if not loop.first else '24px' }} 32px 8px 32px;">
+        <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;text-transform:uppercase;letter-spacing:1px;">
+          Detalhes — {{ bloco.titulo }}
+        </div>
+      </td>
+    </tr>
+    {% for canal in bloco.canais %}
+    <tr>
+      <td style="background:#ffffff;padding:8px 32px 2px 32px;">
+        <div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:6px;">{{ canal.nome }}</div>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td width="49%" style="vertical-align:top;padding-right:6px;">
+              <div style="font-size:9px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">▲ Top 5 Melhor Margem</div>
+              {% if bloco.titulo == "Por Marca" %}
+              <div style="font-size:10px;color:#64748b;margin-bottom:6px;">Relação das 5 marcas mais relevantes para receita</div>
+              {% endif %}
+              {{ tabela_detalhe(bloco.coluna_id, canal.melhores) }}
+            </td>
+            <td width="2%"></td>
+            <td width="49%" style="vertical-align:top;padding-left:6px;">
+              <div style="font-size:9px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">▼ Top 5 Pior Margem</div>
+              {{ tabela_detalhe(bloco.coluna_id, canal.piores) }}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+
+    <!-- ── Footer ── -->
+    <tr>
+      <td style="background:#0f172a;border-radius:0 0 12px 12px;padding:16px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="font-size:11px;color:#475569;">Gerado automaticamente — Sistema de Relatórios HLMotobike</td>
+            <td align="right" style="font-size:11px;color:#334155;">Não responda este email.</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+  </table>
+  </td></tr>
+</table>
+
+</body>
+</html>

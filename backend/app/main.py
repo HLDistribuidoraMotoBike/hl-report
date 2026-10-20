@@ -5,6 +5,7 @@ Segue o padrão de desenvolvimento dos apps HL (hl-core/PADRAO_DESENVOLVIMENTO.m
 em /api, banco versionado com Alembic (migrations/; o app não sobe com o banco atrasado — rodar `python migrar.py`).
 Os relatórios em si (SQL, configuração, páginas) ficam em arquivos na pasta relatorios/. Regras: docs/REGRAS.md.
 """
+import asyncio
 import logging
 import os
 
@@ -26,20 +27,21 @@ logger = logs.configurar(os.path.join(BACKEND, "logs"))
 from hlcore.database import SessionLocal  # noqa: E402
 from hlcore.modelos import GrupoPermissao  # noqa: E402
 from app.permissoes import GRUPOS_INICIAIS, PERMISSOES  # noqa: E402
-from app.modulos import relatorios  # noqa: E402
+from app.modulos import email, relatorios  # noqa: E402
+from app.modulos.email import mailer, service as email_service  # noqa: E402
 from app.modulos.relatorios import hana  # noqa: E402
 
 # Toda a API fica em /api: o resto do endereço é tela do React
 API = "/api"
 
-# Configurações deste app: conexão com o SAP HANA e os atalhos para os outros apps no trocador
-CONFIGURACOES = hana.CONFIGURACOES + [
+# Configurações deste app: conexão com o SAP HANA, e-mail (SMTP + agendador) e os atalhos para os outros apps
+CONFIGURACOES = hana.CONFIGURACOES + mailer.CONFIGURACOES + [
     configuracoes.atalho("APP_HL_LOGISTICA", "HL Logística", "http://100.64.113.7:8000"),
     configuracoes.atalho("APP_HL_BACKOFFICE", "HL Backoffice", "http://100.64.113.7:8002"),
 ]
 
 # versão: só aqui — o frontend lê este número na compilação (vite.config.js)
-app = FastAPI(title="HL Report", version="0.1.0")
+app = FastAPI(title="HL Report", version="0.2.0")
 erros.registrar_handlers(app)
 app.include_router(acesso.rotas(PERMISSOES), prefix=API)
 app.include_router(configuracoes.rotas(), prefix=API)
@@ -47,6 +49,8 @@ app.include_router(tempo_real.rotas(), prefix=API)   # WebSocket: logout forçad
 app.include_router(sistema.rotas(), prefix=API)
 sistema.registrar_versao(app)
 app.include_router(relatorios.router, prefix=API)
+app.include_router(relatorios.router_admin, prefix=API)
+app.include_router(email.router, prefix=API)
 
 app.add_middleware(
     CORSMiddleware,
@@ -77,7 +81,14 @@ async def startup_event():
     migracoes.exigir_atualizado(ALEMBIC_INI)
     configuracoes.semear(CONFIGURACOES)
     _semear_grupos()
+    db = SessionLocal()
+    try:
+        email_service.sincronizar(db)
+    finally:
+        db.close()
     sistema.iniciar_tarefas_padrao()
+    # agendador de e-mails: roda sempre, mas só envia com Configurações → API → E-mail → EMAIL_AGENDADOR = ligado
+    asyncio.create_task(email_service.agendador())
 
 
 @app.on_event("shutdown")

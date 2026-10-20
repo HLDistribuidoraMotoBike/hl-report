@@ -93,3 +93,29 @@ def executar(rel_id: str, filtros: dict) -> dict:
     if rotulos and not linhas:
         resposta["mes_labels"] = rotulos
     return resposta
+
+
+# ── Teste de SQL (admin) ────────────────────────────────────────────────────
+
+LIMITE_TESTE = 200
+
+
+def parametros(sql: str) -> list[str]:
+    """Nomes dos :filtros usados no SQL (sem repetir, na ordem), ignorando as linhas de comentário."""
+    vistos = []
+    for linha in sql.splitlines():
+        if linha.strip().startswith("--"):
+            continue
+        for nome in re.findall(r":([a-zA-Z_]+)", linha):
+            if nome not in vistos:
+                vistos.append(nome)
+    return vistos
+
+
+def testar(sql: str, filtros: dict, schema: str = "") -> dict:
+    """Executa um SQL ainda não salvo e devolve só as primeiras linhas."""
+    if not (sql or "").strip():
+        raise ErroNegocio("O SQL está vazio.", "SQL_VAZIO", 400)
+    sql_final, params = substituir_filtros(sql, filtros or {})
+    colunas, linhas = hana.consultar(sql_final, params, schema or "", limite=LIMITE_TESTE + 1)
+    return {"colunas": colunas, "data": linhas[:LIMITE_TESTE], "cortado": len(linhas) > LIMITE_TESTE}

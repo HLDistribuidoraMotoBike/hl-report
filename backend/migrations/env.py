@@ -10,7 +10,8 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./report.db")
 from alembic import context  # noqa: E402
 
 from hlcore.database import Base, engine  # noqa: E402
-import hlcore.modelos  # noqa: E402,F401  (tabelas comuns — o Report não tem tabelas próprias)
+import hlcore.modelos  # noqa: E402,F401  (tabelas comuns)
+import app.modulos.email.models  # noqa: E402,F401
 
 target_metadata = Base.metadata
 

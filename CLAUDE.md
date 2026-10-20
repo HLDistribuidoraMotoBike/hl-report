@@ -14,7 +14,10 @@ siga-o; quando o código e o padrão divergirem, vale o padrão.
 | Porta | 9001 em paralelo com o Report antigo → 9000 depois da troca | 8003 (API) · 5175 (tela, hot reload) |
 | Banco | `backend/report.db` — **PRODUÇÃO** | `backend/report_dev.db` |
 
-- **O HANA do dev é o de PRODUÇÃO** (só leitura). Os cenários simulam o HANA.
+- **O HANA do dev é o de PRODUÇÃO** (só leitura). Os cenários simulam o HANA e o SMTP.
+- **E-mail**: o SMTP e os destinatários do dev são os REAIS — o `.env` de dev tem `EMAIL_SOMENTE_TESTE=true` (só envio
+  de teste para um endereço digitado). Nunca ligue `EMAIL_AGENDADOR` no dev; na VM, só depois de desligar a tarefa
+  de e-mail do Report antigo (envio em dobro).
 - Na VM rodam também o HL Logística (8000) e o HL Backoffice (8002): nada de `taskkill python.exe`; pare só a porta 9000.
 - O Report antigo (Flask, `Z:\report` = `C:\ProjetosHL\report`) é o que está em produção até a troca (ver
   docs/PUBLICACAO.md). Não mexa nele sem pedido.
@@ -35,8 +38,12 @@ siga-o; quando o código e o padrão divergirem, vale o padrão.
 ## Estrutura
 
 - `relatorios/` — os relatórios em si (SQL, config JSON, páginas de indicador). Ver `relatorios/README.md`.
-- `backend/app/modulos/relatorios/` — catálogo (arquivos), HANA, execução, páginas de indicador (iframe + passe).
+- `backend/app/modulos/relatorios/` — catálogo (arquivos), HANA, execução, páginas de indicador (iframe + passe),
+  administração dos arquivos (`arquivos.py`, `router_admin.py`).
+- `backend/app/modulos/email/` — e-mails agendados (definição em `relatorios/email/`, operação e histórico no banco,
+  agendador no próprio app).
 - `frontend/src/modulos/relatorios/` — tela de lista (filtros, agrupamento, pivot, Excel) e o iframe dos indicadores.
+- `frontend/src/modulos/admin/` — Configurações → Relatórios, Templates e E-mails agendados.
 - Toda a API em `/api`; `/api/executar/<Pasta>/<Nome>` mantém o formato do Report antigo (`{ok, erro}`).
 
 ## Idioma

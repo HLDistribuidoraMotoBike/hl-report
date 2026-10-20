@@ -56,8 +56,9 @@ def valor(v):
     return v
 
 
-def consultar(sql: str, params: list, schema: str = "", limite: int = 0) -> tuple[list[str], list[dict]]:
-    """(colunas, linhas) da consulta. limite > 0 corta as linhas (usado no teste de SQL do admin)."""
+def consultar(sql: str, params: list, schema: str = "", limite: int = 0, converter=valor) -> tuple[list[str], list[dict]]:
+    """(colunas, linhas) da consulta. limite > 0 corta as linhas (teste de SQL do admin); converter = conversão de
+    cada célula (padrão: a da tela; o e-mail usa a dele)."""
     conn = cursor = None
     try:
         conn = conectar()
@@ -67,7 +68,7 @@ def consultar(sql: str, params: list, schema: str = "", limite: int = 0) -> tupl
         cursor.execute(sql, params)
         colunas = [d[0] for d in cursor.description] if cursor.description else []
         linhas = cursor.fetchmany(limite) if limite else cursor.fetchall()
-        return colunas, [{c: valor(v) for c, v in zip(colunas, linha)} for linha in linhas]
+        return colunas, [{c: converter(v) for c, v in zip(colunas, linha)} for linha in linhas]
     finally:
         for recurso in (cursor, conn):
             if recurso is not None:
