@@ -44,6 +44,8 @@ siga-o; quando o código e o padrão divergirem, vale o padrão.
   agendador no próprio app).
 - `frontend/src/modulos/relatorios/` — tela de lista (filtros, agrupamento, pivot, Excel) e o iframe dos indicadores.
 - `frontend/src/modulos/admin/` — Configurações → Relatórios, Templates e E-mails agendados.
+- `frontend/src/modulos/paineis/` — painéis (relatório tipo "painel" = tela React; registro em `index.js`). Hoje:
+  Rentabilidade (E-commerce/Consolidado). Os cálculos ficam num arquivo sem tela (`dados.js`).
 - Toda a API em `/api`; `/api/executar/<Pasta>/<Nome>` mantém o formato do Report antigo (`{ok, erro}`).
 
 ## Idioma

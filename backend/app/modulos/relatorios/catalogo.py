@@ -2,8 +2,11 @@
 
     sql/<Pasta>/<Nome>.sql          a consulta (filtros como :nome_do_filtro); sql/<Nome>.sql = pasta "Geral"
     sql/<Pasta>/_<sub>/<Nome>.sql   consultas auxiliares de um indicador (não aparecem no menu; id "Pasta/_sub/Nome")
-    config/<Pasta>/<Nome>.json      tipo (lista | indicador), título, filtros, modo pivot, agrupamento, schema...
+    config/<Pasta>/<Nome>.json      tipo (lista | indicador | painel), título, filtros, modo pivot, agrupamento, schema...
     templates/<Arquivo>.html        página própria de um relatório do tipo "indicador" (Jinja)
+
+Relatório do tipo "painel" = tela React do próprio app (config.componente) que consulta outros SQLs (config.fontes,
+em geral numa subpasta _nome da mesma pasta); ele existe só pelo config, sem SQL próprio.
 
 O id de um relatório é "Pasta/Nome" (o mesmo do Report antigo). A pasta é a unidade de permissão: o grupo do
 usuário precisa ter a pasta como recurso (admin vê todas).
@@ -81,9 +84,31 @@ def carregar_sql(rel_id: str) -> str:
 
 def existe(rel_id: str) -> bool:
     try:
-        return _arquivo(pasta_sql(), rel_id, ".sql").is_file()
+        return _arquivo(pasta_sql(), rel_id, ".sql").is_file() or e_painel(rel_id)
     except ErroNegocio:
         return False
+
+
+def e_painel(rel_id: str) -> bool:
+    """Relatório definido só pelo config (tipo painel)."""
+    try:
+        caminho = _arquivo(pasta_config(), rel_id, ".json")
+    except ErroNegocio:
+        return False
+    if not caminho.is_file():
+        return False
+    with open(caminho, encoding="utf-8-sig") as f:
+        return json.load(f).get("tipo") == "painel"
+
+
+def paineis(pasta: str) -> list[str]:
+    """Nomes dos painéis (config tipo painel sem SQL) de uma pasta."""
+    dir_cfg = pasta_config() if pasta == GERAL else pasta_config() / pasta
+    dir_sql = pasta_sql() if pasta == GERAL else pasta_sql() / pasta
+    if not dir_cfg.is_dir():
+        return []
+    return [c.stem for c in dir_cfg.glob("*.json")
+            if not (dir_sql / f"{c.stem}.sql").exists() and e_painel(f"{pasta}/{c.stem}")]
 
 
 def carregar_config(rel_id: str) -> dict:
@@ -122,10 +147,10 @@ def listar(permitidas: Optional[set] = None) -> list[dict]:
             continue
         dir_ = base if pasta == GERAL else base / pasta
         itens = []
-        for arq in sorted(dir_.glob("*.sql"), key=lambda p: p.stem.lower()):
-            rel_id = f"{pasta}/{arq.stem}"
+        for nome in sorted([a.stem for a in dir_.glob("*.sql")] + paineis(pasta), key=str.lower):
+            rel_id = f"{pasta}/{nome}"
             cfg = carregar_config(rel_id)
-            itens.append({"id": rel_id, "nome": arq.stem, "titulo": cfg.get("titulo") or arq.stem,
+            itens.append({"id": rel_id, "nome": nome, "titulo": cfg.get("titulo") or nome,
                           "tipo": cfg.get("tipo", "lista")})
         if itens:
             resultado.append({"pasta": pasta, "relatorios": itens})

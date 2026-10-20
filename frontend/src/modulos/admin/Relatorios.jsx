@@ -41,7 +41,7 @@ export default function Relatorios() {
       const { data } = await lerSql(id)
       const item = arvore.flatMap(p => p.itens).find(i => i.id === id)
       const novo = { id: data.id, auxiliar: !!item?.auxiliar, sql: data.sql, form: paraFormulario(data.config, id.split('/').pop()) }
-      setSel(id); setEd(novo); setOriginal(instantaneo(novo)); setAba('sql')
+      setSel(id); setEd(novo); setOriginal(instantaneo(novo)); setAba(data.sql === null ? 'config' : 'sql')
       setTeste({ valores: {}, resultado: null, erro: '', rodando: false })
       setAbertas(a => new Set(a).add(id.split('/')[0]))
     } catch (e) {
@@ -163,9 +163,9 @@ export default function Relatorios() {
                 <button className="btn btn-primary btn-sm" onClick={salvar} disabled={!sujo || salvando}>{salvando ? 'Salvando...' : 'Salvar'}</button>
               </div>
               <div className="adm-abas">
-                <button className={`adm-aba${aba === 'sql' ? ' adm-aba--ativa' : ''}`} onClick={() => setAba('sql')}>SQL</button>
+                {ed.sql !== null && <button className={`adm-aba${aba === 'sql' ? ' adm-aba--ativa' : ''}`} onClick={() => setAba('sql')}>SQL</button>}
                 {!ed.auxiliar && <button className={`adm-aba${aba === 'config' ? ' adm-aba--ativa' : ''}`} onClick={() => setAba('config')}>Configuração</button>}
-                <button className={`adm-aba${aba === 'teste' ? ' adm-aba--ativa' : ''}`} onClick={() => setAba('teste')}>Testar</button>
+                {ed.sql !== null && <button className={`adm-aba${aba === 'teste' ? ' adm-aba--ativa' : ''}`} onClick={() => setAba('teste')}>Testar</button>}
               </div>
 
               {aba === 'sql' && (
@@ -184,7 +184,21 @@ export default function Relatorios() {
                     <input type="checkbox" checked={ed.form.usaConfig} onChange={e => setForm({ usaConfig: e.target.checked })} />
                     Configuração própria {!ed.form.usaConfig && <span className="text-muted">— sem ela: lista com os filtros Data Inicial, Data Final, Marca e Loja</span>}
                   </label>
-                  {ed.form.usaConfig && (
+                  {ed.form.usaConfig && ed.form.tipo === 'painel' && (
+                    <div className="adm-grade">
+                      <div>
+                        <label className="form-label">Título (menu e tela)</label>
+                        <input className="form-control" value={ed.form.titulo} onChange={e => setForm({ titulo: e.target.value })} />
+                      </div>
+                    </div>
+                  )}
+                  {ed.form.usaConfig && ed.form.tipo === 'painel' && (
+                    <>
+                      <div className="adm-secao">Componente e fontes (JSON)</div>
+                      <EditorCodigo valor={ed.form.avancado} onChange={v => setForm({ avancado: v })} onSalvar={salvar} linhas={10} />
+                    </>
+                  )}
+                  {ed.form.usaConfig && ed.form.tipo !== 'painel' && (
                     <>
                       <div className="adm-grade">
                         <div>
@@ -196,7 +210,9 @@ export default function Relatorios() {
                           <select className="form-control" value={ed.form.tipo} onChange={e => setForm({ tipo: e.target.value })}>
                             <option value="lista">Lista (tabela padrão)</option>
                             <option value="indicador">Indicador (página própria)</option>
+                            {ed.sql === null && <option value="painel">Painel (tela do app)</option>}
                           </select>
+                          {ed.form.tipo === 'painel' && <div className="adm-ajuda">Tela React do próprio app (componente e fontes no JSON avançado) — muda com nova versão do app.</div>}
                         </div>
                         {ed.form.tipo === 'indicador' && (
                           <div>

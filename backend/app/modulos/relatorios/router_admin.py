@@ -20,7 +20,7 @@ class PastaIn(BaseModel):
 
 class SqlIn(BaseModel):
     id: str
-    sql: str
+    sql: Optional[str] = None   # painel: sem SQL próprio
     config: Optional[dict[str, Any]] = None
     novo: bool = False
 
@@ -59,7 +59,7 @@ def excluir_pasta(nome: str, db: Session = Depends(get_db), user=Depends(verific
 @router_admin.get("/sql/{rel_id:path}")
 def ler_sql(rel_id: str, _=Depends(verificar_admin)):
     dados = arquivos.ler(rel_id)
-    dados["parametros"] = service.parametros(dados["sql"])
+    dados["parametros"] = service.parametros(dados["sql"] or "")
     return dados
 
 

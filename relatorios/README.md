@@ -21,11 +21,12 @@ templates/<Arquivo>.html         página própria de um indicador
 
 | Campo | Uso |
 |---|---|
-| `tipo` | `lista` (tela padrão) ou `indicador` (página própria em `templates/`) |
+| `tipo` | `lista` (tela padrão), `indicador` (página própria em `templates/`) ou `painel` (tela React do app) |
 | `titulo` | nome no menu e na tela (padrão: nome do arquivo) |
 | `schema` | troca o schema do HANA só para este relatório (ex.: `SBO_MATRIZ`) |
 | `filtros` | `[{id, label, tipo: date\|number\|select\|text, opcoes?, placeholder?}]` — `data_ini`/`data_fim` já vêm com o 1º dia do mês / hoje |
 | `template` | (indicador) arquivo em `templates/` (padrão: `<Nome>.html`) |
+| `componente`, `fontes` | (painel) a tela React (`frontend/src/modulos/paineis`) e os SQLs que ela consulta — o painel não tem `.sql` próprio |
 | `modo: "pivot"` | lista com meses em colunas: `colunas_fixas`, `colunas_mes_label`, `colunas_mes_qtd` |
 | `colunas_congeladas` | quantas colunas da esquerda ficam fixas ao rolar (lista e pivot) |
 | `agrupamento` | grupos com totais — ver abaixo |

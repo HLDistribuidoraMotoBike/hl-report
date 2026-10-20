@@ -14,6 +14,7 @@ from app.modulos.relatorios import catalogo
 
 PROIBIDOS = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 TIPOS_TEMPLATE = ("relatorio", "email")
+TIPOS_RELATORIO = ("lista", "indicador", "painel")
 
 
 def validar_nome(nome: str, oque: str = "Nome") -> str:
@@ -43,11 +44,11 @@ def arvore() -> list[dict]:
     for pasta in pastas:
         dir_ = base if pasta == catalogo.GERAL else base / pasta
         itens = []
-        for arq in sorted(dir_.glob("*.sql"), key=lambda p: p.stem.lower()):
-            rel_id = f"{pasta}/{arq.stem}"
+        for nome in sorted([a.stem for a in dir_.glob("*.sql")] + catalogo.paineis(pasta), key=str.lower):
+            rel_id = f"{pasta}/{nome}"
             cfg = catalogo.carregar_config(rel_id)
-            itens.append({"id": rel_id, "nome": arq.stem, "auxiliar": False, "tipo": cfg.get("tipo", "lista"),
-                          "titulo": cfg.get("titulo") or arq.stem})
+            itens.append({"id": rel_id, "nome": nome, "auxiliar": False, "tipo": cfg.get("tipo", "lista"),
+                          "titulo": cfg.get("titulo") or nome})
         if pasta != catalogo.GERAL:
             for sub in sorted(p for p in dir_.iterdir() if p.is_dir() and p.name.startswith("_")):
                 for arq in sorted(sub.glob("*.sql"), key=lambda p: p.stem.lower()):
@@ -96,13 +97,13 @@ def _caminhos(rel_id: str) -> tuple[str, Path, Path]:
 
 def ler(rel_id: str) -> dict:
     rel_id, sql, cfg = _caminhos(rel_id)
-    if not sql.is_file():
+    if not sql.is_file() and not catalogo.e_painel(rel_id):
         raise ErroNegocio(f"SQL '{rel_id}' não encontrado.", "RELATORIO_NAO_ENCONTRADO", 404)
     config = None
     if cfg.is_file():
         with open(cfg, encoding="utf-8-sig") as f:
             config = json.load(f)
-    return {"id": rel_id, "sql": sql.read_text(encoding="utf-8-sig"), "config": config}
+    return {"id": rel_id, "sql": sql.read_text(encoding="utf-8-sig") if sql.is_file() else None, "config": config}
 
 
 def salvar(rel_id: str, sql: str, config, novo: bool) -> str:
@@ -111,17 +112,23 @@ def salvar(rel_id: str, sql: str, config, novo: bool) -> str:
     pasta = catalogo.pasta_do(rel_id)
     if pasta != catalogo.GERAL and not (catalogo.pasta_sql() / pasta).is_dir():
         raise ErroNegocio(f"Pasta '{pasta}' não existe.", "PASTA_NAO_ENCONTRADA", 404)
-    if novo and caminho_sql.exists():
-        raise ErroNegocio("Já existe um relatório com esse nome.", "RELATORIO_EXISTE", 409)
-    if not novo and not caminho_sql.exists():
-        raise ErroNegocio(f"SQL '{rel_id}' não encontrado.", "RELATORIO_NAO_ENCONTRADO", 404)
-    if not (sql or "").strip():
-        raise ErroNegocio("O SQL está vazio.", "SQL_VAZIO", 400)
     if config is not None and not isinstance(config, dict):
         raise ErroNegocio("A configuração precisa ser um objeto JSON.", "CONFIG_INVALIDA", 400)
-    if config and config.get("tipo", "lista") not in ("lista", "indicador"):
-        raise ErroNegocio("Tipo deve ser 'lista' ou 'indicador'.", "CONFIG_INVALIDA", 400)
-    _gravar(caminho_sql, sql)
+    if config and config.get("tipo", "lista") not in TIPOS_RELATORIO:
+        raise ErroNegocio("Tipo deve ser 'lista', 'indicador' ou 'painel'.", "CONFIG_INVALIDA", 400)
+    painel = bool(config) and config.get("tipo") == "painel"
+    existe = caminho_sql.exists() or catalogo.e_painel(rel_id)
+    if novo and existe:
+        raise ErroNegocio("Já existe um relatório com esse nome.", "RELATORIO_EXISTE", 409)
+    if not novo and not existe:
+        raise ErroNegocio(f"SQL '{rel_id}' não encontrado.", "RELATORIO_NAO_ENCONTRADO", 404)
+    if painel:
+        if not config.get("componente"):
+            raise ErroNegocio("Painel precisa de 'componente' (a tela React).", "CONFIG_INVALIDA", 400)
+    elif not (sql or "").strip():
+        raise ErroNegocio("O SQL está vazio.", "SQL_VAZIO", 400)
+    if (sql or "").strip():
+        _gravar(caminho_sql, sql)
     if config is None:
         if caminho_cfg.exists():
             caminho_cfg.unlink()
@@ -132,9 +139,10 @@ def salvar(rel_id: str, sql: str, config, novo: bool) -> str:
 
 def excluir(rel_id: str) -> str:
     rel_id, sql, cfg = _caminhos(rel_id)
-    if not sql.is_file():
+    if not sql.is_file() and not catalogo.e_painel(rel_id):
         raise ErroNegocio(f"SQL '{rel_id}' não encontrado.", "RELATORIO_NAO_ENCONTRADO", 404)
-    sql.unlink()
+    if sql.is_file():
+        sql.unlink()
     if cfg.is_file():
         cfg.unlink()
     return rel_id

@@ -102,6 +102,21 @@ with TestClient(app) as c:
         "exclui relatório")
     chk(c.delete("/api/admin/pastas/Vendas", headers=ha).status_code == 200 and not (pasta / "sql" / "Vendas").exists(), "exclui pasta vazia")
 
+    # painel: só config, sem SQL
+    r = c.put("/api/admin/sql", headers=ha, json={"id": "Financeiro/Painel", "sql": None, "novo": True,
+                                                  "config": {"titulo": "Painel X", "tipo": "painel", "componente": "x"}})
+    chk(r.status_code == 200 and not (pasta / "sql" / "Financeiro" / "Painel.sql").exists(), "cria painel sem SQL")
+    chk(any(i["id"] == "Financeiro/Painel" and i["tipo"] == "painel" for i in c.get("/api/admin/arvore", headers=ha).json()[0]["itens"]),
+        "painel aparece na árvore")
+    d = c.get("/api/admin/sql/Financeiro/Painel", headers=ha).json()
+    chk(d["sql"] is None and d["config"]["componente"] == "x" and d["parametros"] == [], "lê painel (sql None)")
+    chk(c.put("/api/admin/sql", headers=ha, json={"id": "Financeiro/Painel", "novo": False,
+                                                  "config": {"titulo": "P", "tipo": "painel"}}).status_code == 400, "painel exige componente")
+    chk(c.put("/api/admin/sql", headers=ha, json={"id": "Financeiro/Painel", "sql": None, "novo": True,
+                                                  "config": {"tipo": "painel", "componente": "x"}}).status_code == 409, "painel repetido: 409")
+    chk(c.delete("/api/admin/sql/Financeiro/Painel", headers=ha).status_code == 200
+        and not (pasta / "config" / "Financeiro" / "Painel.json").exists(), "exclui painel")
+
     # teste de SQL
     r = c.post("/api/admin/testar-sql", headers=ha, json={"sql": "-- x\nSELECT :a, :b FROM T", "filtros": {"a": "1"}, "schema": "SBO_X"})
     j = r.json()

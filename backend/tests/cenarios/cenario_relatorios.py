@@ -34,6 +34,8 @@ sys.path.insert(0, os.getcwd())
     "<!DOCTYPE html><html><head><title>P</title></head><body><a href=\"/\">← Voltar</a>"
     "<script>const CFG = {{ config | tojson }}; const REL_ID = {{ rel_id | tojson }};</script></body></html>", encoding="utf-8")
 (pasta / "sql" / "Compras" / "Fluxo.sql").write_text("SELECT MES_0_LABEL, MES_1_LABEL FROM X", encoding="utf-8")
+(pasta / "config" / "Financeiro" / "Resultado.json").write_text(json.dumps(
+    {"tipo": "painel", "titulo": "Resultado", "componente": "resultado", "fontes": {"a": "Financeiro/_aux/Contas"}}), encoding="utf-8")
 (pasta / "sql" / "Solto.sql").write_text("SELECT 1 FROM DUMMY", encoding="utf-8")
 (pasta.parent / "segredo.sql").write_text("SELECT 'fora' FROM DUMMY", encoding="utf-8")
 
@@ -117,8 +119,9 @@ with TestClient(app) as c:
     chk([p["pasta"] for p in menu] == ["Compras", "Financeiro", "Geral"], f"admin vê todas as pastas (com 'Geral' p/ SQL solto): {menu}")
     fin = next(p for p in menu if p["pasta"] == "Financeiro")["relatorios"]
     chk([(x["id"], x["titulo"], x["tipo"]) for x in fin] == [("Financeiro/Baixas", "Prazo de Baixas", "lista"),
-                                                             ("Financeiro/Painel", "Painel", "indicador")],
-        f"relatórios com título/tipo do config; subpasta _aux fora do menu: {fin}")
+                                                             ("Financeiro/Painel", "Painel", "indicador"),
+                                                             ("Financeiro/Resultado", "Resultado", "painel")],
+        f"relatórios com título/tipo do config; painel só com config; subpasta _aux fora do menu: {fin}")
     chk([p["pasta"] for p in c.get("/api/relatorios", headers=hf).json()] == ["Financeiro"], "usuário só vê as pastas do grupo")
     chk(c.get("/api/relatorios/pastas", headers=ha).json() == ["Compras", "Financeiro", "Geral"], "pastas (recursos) para o admin")
     chk(c.get("/api/relatorios/pastas", headers=hf).status_code == 403, "lista de pastas é só do admin")
@@ -179,6 +182,14 @@ with TestClient(app) as c:
     chk(c.post("/api/relatorios/pagina", headers=hf, json={"rel_id": "Compras/Fluxo"}).status_code == 403,
         "passe só para pasta permitida")
     chk(c.get(outro).status_code == 400, "relatório do tipo lista não tem página própria")
+
+    # painel (tela React): existe só pelo config; consulta as fontes da mesma pasta
+    r = c.get("/api/config/Financeiro/Resultado", headers=hf)
+    chk(r.status_code == 200 and r.json()["componente"] == "resultado", "config do painel (sem SQL próprio)")
+    chk(c.get("/api/config/Compras/Resultado", headers=hf).status_code in (403, 404), "painel inexistente/sem acesso")
+    chk(c.post("/api/relatorios/pagina", headers=hf, json={"rel_id": "Financeiro/Resultado"}).status_code == 200
+        and c.get(c.post("/api/relatorios/pagina", headers=hf, json={"rel_id": "Financeiro/Resultado"}).json()["url"]).status_code == 400,
+        "painel não tem página HTML")
 
 # importação do permissions.json do Report antigo
 from scripts.importar_permissoes import importar  # noqa: E402

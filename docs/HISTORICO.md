@@ -3,6 +3,24 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.3.0 — 20/10/2026 — Rentabilidade em React (etapa 3, 1º indicador) + correções
+
+Decisões do usuário: ordem da etapa 3 = Rentabilidade → Simulador (vai para o HL Backoffice: é formulário e vai
+guardar modelos da gestora) → DRE; "Rentabilidade Consolidado" = todas as empresas e canais; juntar as duas.
+- Tipo novo de relatório **painel**: tela React do app (`config.componente`), definida só pelo config, que consulta
+  as fontes do `config.fontes` (subpasta `_nome`, fora do menu). Admin: painel não tem aba SQL.
+- **Comercial - Ecommerce → Rentabilidade** (um item só no menu) substitui as páginas RentabilidadeEcommerce.html e
+  RentabilidadeConsolidado.html (3.700 linhas quase iguais): visão **E-commerce** (consulta legada, números iguais aos
+  de antes) ou **Consolidado**; abas Visão geral, Gráficos, Produtos, Marcas, Notas; detalhe lateral por produto/marca;
+  no consolidado, cards e filtro por canal (Atacado em Moto/Bike, como no e-mail).
+- **Erros corrigidos**: (1) a página "Rentabilidade Consolidado" consultava a lógica legada do E-commerce — mostrava os
+  mesmos números com outro rótulo; (2) a consulta feita para ela (sobre a HL_RENTABILIDADE) filtrava só o
+  E-commerce, usava `CONCAT` com 3 argumentos (o HANA recusa — nunca rodou), parâmetros `:dataIni/:dataFim`, só
+  TIPO_ORIGEM VENDA e um nome de coluna de impostos que a página não lia (impostos zerados). Agora: todas as empresas
+  e canais, mesmo critério do e-mail diário (VENDA + VENDA_100_ESPECIAL) — conferido: 19/10 bate centavo a centavo
+  com o e-mail (E-commerce R$ 501.718,84; Atacado R$ 98.689,00); consulta em 0,6 s (a legada do E-commerce leva ~30 s).
+- Removidos os modelos sem uso `IndicadorExemplo.html` e `PivotTemplate.html`.
+
 ### 0.2.0 — 20/10/2026 — Administração e e-mails agendados (etapa 2)
 
 Usuário testou e aprovou a 0.1.0; etapa 2 do plano:
@@ -38,4 +56,5 @@ hl-core, como HL Logística e HL Backoffice. Etapa 1 de 3:
   dentro do menu, com passe e o login da tela nas chamadas.
 - Conexão HANA em Configurações → API → SAP HANA. hlcore 0.5.1. Cenários `app` e `relatorios`.
 
-Próximas etapas: (2) Admin do Report em React — feita na 0.2.0; (3) indicadores migrados para React, um a um.
+Próximas etapas: (2) Admin do Report em React — feita na 0.2.0; (3) indicadores migrados para React, um a um —
+Rentabilidade na 0.3.0.

@@ -40,6 +40,12 @@ export function paraConfig(form) {
     }
     return saida
   })
+  if (form.tipo === 'painel') {
+    const novo = { titulo: form.titulo.trim(), tipo: 'painel', ...resto }
+    const final = {}
+    for (const k of form.ordem || []) if (k in novo) final[k] = novo[k]
+    return Object.assign(final, novo)
+  }
   const cfg = { titulo: form.titulo.trim(), tipo: form.tipo }
   if (form.tipo === 'indicador' && form.template) cfg.template = form.template
   if (form.schema.trim()) cfg.schema = form.schema.trim()

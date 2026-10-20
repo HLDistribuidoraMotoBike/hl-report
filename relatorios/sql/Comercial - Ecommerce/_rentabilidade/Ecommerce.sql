@@ -1,7 +1,7 @@
--- Rentabilidade E-commerce
+-- Rentabilidade E-commerce (lógica legada, direto nas tabelas do SAP) — fonte da visão "E-commerce" do painel
+-- Comercial - Ecommerce/Rentabilidade (tela React do HL Report, 0.3.0).
 -- Filtros: :marca (texto parcial), :data_ini (YYYY-MM-DD), :data_fim (YYYY-MM-DD)
--- Tipo: indicador
--- Template: RentabilidadeEcommerce.html
+-- Colunas: as que o painel lê (frontend/src/modulos/paineis/rentabilidade/dados.js) — não renomear sem ajustar lá.
 
 WITH 
 -- ============================================================
@@ -583,7 +583,7 @@ SELECT
     -- ── Total de Impostos ────────────────────────────────────────
     LP."VLR PIS" + LP."VLR COFINS" + LP."VLR IPI"
     + LP."Icms Regime" + LP."Difal" + LP."Icms Transferencia"
-                                            AS "Total Impostos (Pis + Cofins + IPI + ICMS(Presumido/Difal/Transferencia))",
+                                            AS "Total Impostos",   -- Pis + Cofins + IPI + ICMS (Presumido/Difal/Transferência)
 
     -- ── Receita Bruta (Vlr Anunciado - Impostos - Despesas Op.) ─
     (LP."VlrVendido_NF" * LP."FatorRateio")

@@ -60,6 +60,9 @@ DESLIGADO até a fase 2.
 
 ## Por versão
 
+- **0.3.0**: sem migração. Em `relatorios\` saíram arquivos (páginas e configs antigos da Rentabilidade, 2 modelos sem
+  uso, `Rentabilidade Ecommerce.sql`/`Rentabilidade Consolidado.sql` foram para `_rentabilidade\`) — copiar a pasta
+  `relatorios\` inteira (substituir), não só os alterados.
 - **0.2.0**: migração 0002 (e-mails agendados); dependência nova `openpyxl`; `.env` `EMAIL_SOMENTE_TESTE=false`;
   pasta nova `relatorios\email\`. Na primeira instalação já entra tudo pela fase 1.
 

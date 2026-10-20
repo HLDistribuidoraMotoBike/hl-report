@@ -1,0 +1,9 @@
+{
+  "titulo": "Rentabilidade",
+  "tipo": "painel",
+  "componente": "rentabilidade",
+  "fontes": {
+    "ecommerce": "Comercial - Ecommerce/_rentabilidade/Ecommerce",
+    "consolidado": "Comercial - Ecommerce/_rentabilidade/Consolidado"
+  }
+}

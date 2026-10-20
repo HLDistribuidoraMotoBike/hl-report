@@ -27,7 +27,9 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
 - **Lista** (tela React): filtros do config, busca em todos os campos, filtro por coluna, ordenação, 100 linhas por
   página, colunas congeladas, modo pivot (meses em colunas, com total) e agrupamento (totais por nível, expandir/
   recolher, total geral), exportação Excel/CSV.
-- **Indicador** (DRE, Rentabilidade, Simulador...): a página própria em `relatorios/templates/`, aberta num iframe
+- **Painel** (tela React do app, `config.componente`): definido só pelo config; consulta as fontes do
+  `config.fontes` (subpasta `_nome` da mesma pasta, então a permissão é a da pasta). Hoje: Rentabilidade (seção 5).
+- **Indicador** (DRE, Simulador): a página própria em `relatorios/templates/`, aberta num iframe
   dentro do menu. O endereço leva um passe de 12 h válido só para aquela página (só o HTML, sem dados); as chamadas
   da página a `/api` usam o login da tela.
 
@@ -54,3 +56,13 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
 - `EMAIL_SOMENTE_TESTE=true` (desenvolvimento): só o envio de teste funciona — o SMTP e os destinatários são os reais.
 - Todo envio fica no histórico (quem, quando, tipo, status, linhas, anexo, erro). SMTP: STARTTLS na porta
   configurada; se falhar, SSL na 465.
+
+## 5. Rentabilidade (`Comercial - Ecommerce/Rentabilidade`, painel)
+
+- **E-commerce**: consulta legada direto nas tabelas do SAP (`_rentabilidade/Ecommerce.sql`) — ICMS Presumido conta
+  como imposto (entra em "Total de impostos" e no quadro de impostos). Filtro de marca por texto parcial.
+- **Consolidado**: `HL_RENTABILIDADE`, **todas as empresas e canais**, mesmo critério do e-mail diário "Rentabilidade
+  Consolidada" (TIPO_ORIGEM VENDA e VENDA_100_ESPECIAL, data de emissão) — ICMS Presumido é **crédito** (card próprio,
+  fora dos impostos). Canal do Atacado aberto em Moto/Bike pelo setor do vendedor; filtro por canal na tela.
+- Margem = receita líquida com crédito ÷ valor anunciado. "Mkp médio" = média simples do markup das linhas.
+- Gráficos: 5 maiores por valor anunciado + "Outros". Produtos e Marcas: 50 primeiros (botão "Mostrar todos").
