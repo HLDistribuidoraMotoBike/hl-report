@@ -3,6 +3,14 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.7.1 — 20/10/2026 — Agendador por caixa/botão
+
+Pedido do usuário: "ficou muito ruim ter que escrever Ligado". O agendador de e-mail (`EMAIL_AGENDADOR`) virou caixa
+de marcar em Configurações → API → E-mail (hlcore 0.8.1) e a faixa de Configurações → E-mails agendados ganhou o botão
+**Ligar/Desligar agendador** (pede um segundo clique para confirmar; some no desenvolvimento, que é só teste).
+Importador de e-mails cria as configurações SMTP_* numa instalação nova (achado na publicação de 20/10).
+Publicada na VM em 20/10/2026 com a fase 2 (porta 9000; Report antigo e o agendador dele desligados).
+
 ### 0.7.0 — 20/10/2026 — Acesso central (HL Acesso)
 
 Pedido do usuário: gestão de acesso num lugar só. Com `ACESSO_URL` no `.env` o Report usa o **HL Acesso** (hlcore

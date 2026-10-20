@@ -51,7 +51,7 @@ DESLIGADO até a fase 2.
    - desligar a tarefa antiga: `Disable-ScheduledTask -TaskName "HLMotobike - Agendador de Relatorios Email"` e
      encerrar o processo dela (pythonw do `scheduler.py`);
    - se o `email_reports\config.json` antigo mudou depois da importação, importar de novo (`--executar`);
-   - no app novo: Configurações → API → E-mail → `EMAIL_AGENDADOR` = `ligado`; conferir a faixa verde em
+   - no app novo: Configurações → E-mails agendados → botão **Ligar agendador** (ou a caixa em Configurações → API → E-mail); conferir a faixa verde em
      Configurações → E-mails agendados e, no dia seguinte, o histórico de envios.
 3. `start-service.bat` e `parar-servico.bat`: `PORTA=9000`; parar e iniciar a tarefa "HL Report HLMotobike".
 4. Firewall: a 9000 já está liberada (era do Report antigo); a 9001 pode ser fechada.
@@ -60,6 +60,7 @@ DESLIGADO até a fase 2.
 
 ## Por versão
 
+- **0.7.1**: exige **hlcore 0.8.1** (wheel novo: caixa Ligado/Desligado); sem migração.
 - **0.7.0**: exige **hlcore 0.7.0**; sem migração. Para ligar ao HL Acesso (publicado antes — `hl-core/acesso/PUBLICACAO.md`):
   `ACESSO_URL`, `ACESSO_URL_INTERNA`, `ACESSO_APP`, `ACESSO_SEGREDO`, `APP_URL` no `.env`. Sem elas, login local.
 - **0.6.0**: sem migração; `relatorios\` inteira (DRE.sql foi para `_dre\Saldos.sql`, saiu `templates\DRE.html`).

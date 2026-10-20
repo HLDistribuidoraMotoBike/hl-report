@@ -121,6 +121,13 @@ with TestClient(app) as c:
     chk(set(ag) == {"resumo", "simples"} and not any(a["ativo"] for a in ag.values()) and lst["agendador_ligado"] is False,
         "cada e-mail do emails.json nasce desligado; agendador desligado")
     chk(ag["resumo"]["definicao"]["sql"] == "Logistica/Resumo", "definição vem do emails.json")
+    cfgs = {x["chave"]: x for x in c.get("/api/configuracoes", headers=h).json()}
+    chk(cfgs["EMAIL_AGENDADOR"]["tipo"] == "liga_desliga" and cfgs["SMTP_HOST"]["tipo"] == "texto",
+        "agendador aparece como caixa Ligado/Desligado na tela (0.7.1)")
+    chk(c.put("/api/configuracoes", headers=h, json={"items": [{"chave": "EMAIL_AGENDADOR", "valor": "ligado"}]}).status_code == 200
+        and c.get("/api/email/agendamentos", headers=h).json()["agendador_ligado"] is True, "ligar pela tela vale para o agendador")
+    c.put("/api/configuracoes", headers=h, json={"items": [{"chave": "EMAIL_AGENDADOR", "valor": "desligado"}]})
+    chk(c.get("/api/email/agendamentos", headers=h).json()["agendador_ligado"] is False, "e desligar também")
 
     # validações
     base = {"ativo": True, "horario": "07:00", "dias_semana": ["seg"], "destinatarios": ["a@hl.com.br"], "assunto": "Resumo do dia"}

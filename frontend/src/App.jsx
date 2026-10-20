@@ -20,7 +20,7 @@ const PAPEIS = [
 // Configurações → API: conexão com o SAP HANA, e-mail (SMTP + agendador) e atalhos para os outros apps
 const GRUPOS_CONFIG = {
   hana: { label: 'SAP HANA', descricao: 'Conexão direta com o banco do SAP (só leitura) — todos os relatórios usam' },
-  smtp: { label: 'E-mail', descricao: 'SMTP dos e-mails agendados e o agendador (ligado | desligado). Ligue o agendador SÓ depois de desligar o do Report antigo — senão o e-mail sai em dobro' },
+  smtp: { label: 'E-mail', descricao: 'SMTP dos e-mails agendados e o agendador (caixa Ligado — também em Configurações → E-mails agendados). Ligue o agendador SÓ depois de desligar o do Report antigo — senão o e-mail sai em dobro' },
   apps: GRUPOS_INTEGRACOES.apps,
 }
 

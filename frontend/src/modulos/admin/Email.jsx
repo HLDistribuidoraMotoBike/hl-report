@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { dataHoraCurta, erroApi } from '@hl/ui'
+import { dataHoraCurta, erroApi, salvarConfiguracoes } from '@hl/ui'
 import { enviarEmail, historicoEmails, listarEmails, previaEmail, salvarEmail } from './api'
 import { Aviso, BotaoConfirmar, Modal } from './comum'
 
@@ -144,6 +144,16 @@ export default function Email() {
     }
   }
 
+  async function trocarAgendador(ligar) {
+    try {
+      await salvarConfiguracoes([{ chave: 'EMAIL_AGENDADOR', valor: ligar ? 'ligado' : 'desligado' }])
+      setMsg({ tipo: 'sucesso', texto: `Agendador ${ligar ? 'ligado' : 'desligado'}.` })
+      carregar()
+    } catch (e) {
+      setMsg({ tipo: 'erro', texto: erroApi(e) })
+    }
+  }
+
   if (!dados) return <div className="loading-center"><div className="spinner" /></div>
 
   return (
@@ -153,11 +163,19 @@ export default function Email() {
       {dados.somente_teste && (
         <div className="alert alert-info">Ambiente de desenvolvimento: só <strong>envio de teste</strong> (EMAIL_SOMENTE_TESTE) — o SMTP e os destinatários são os reais.</div>
       )}
-      <div className={`alert ${dados.agendador_ligado ? 'alert-success' : 'alert-warning'}`}>
-        Agendador <strong>{dados.agendador_ligado ? 'LIGADO' : 'DESLIGADO'}</strong>
-        {dados.agendador_ligado
-          ? ' — os e-mails ligados saem no horário (uma vez por dia; até 30 min depois se o servidor estava parado).'
-          : ' — nada sai automaticamente. Ligue em Configurações → API → E-mail (EMAIL_AGENDADOR = ligado) só depois de desligar o agendador do Report antigo.'}
+      <div className={`alert ${dados.agendador_ligado ? 'alert-success' : 'alert-warning'}`}
+           style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          Agendador <strong>{dados.agendador_ligado ? 'LIGADO' : 'DESLIGADO'}</strong>
+          {dados.agendador_ligado
+            ? ' — os e-mails ligados saem no horário (uma vez por dia; até 30 min depois se o servidor estava parado).'
+            : ' — nada sai automaticamente. Ligue só depois de desligar o agendador do Report antigo (senão o e-mail sai em dobro).'}
+        </div>
+        {!dados.somente_teste && (dados.agendador_ligado
+          ? <BotaoConfirmar className="btn btn-outline-secondary btn-sm" confirmar="Desligar? Clique de novo"
+                            onClick={() => trocarAgendador(false)}>Desligar agendador</BotaoConfirmar>
+          : <BotaoConfirmar className="btn btn-success btn-sm" confirmar="Ligar? Clique de novo"
+                            onClick={() => trocarAgendador(true)}>Ligar agendador</BotaoConfirmar>)}
       </div>
 
       <div className="adm-emails">
