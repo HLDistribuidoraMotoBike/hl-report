@@ -1,19 +1,20 @@
 -- =====================================================================================
--- Rentabilidade CONSOLIDADA — todas as empresas e canais — fonte da visão "Consolidado" do painel
--- Comercial - Ecommerce/Rentabilidade (tela React do HL Report, 0.3.0).
+-- Rentabilidade — fonte do painel Comercial - Ecommerce/Rentabilidade (tela React do HL Report).
 --
 -- Base: HL_RENTABILIDADE (a mesma do e-mail diário "Rentabilidade Consolidada"), com o MESMO critério dele:
 -- TIPO_ORIGEM VENDA e VENDA_100_ESPECIAL, por data de emissão.
--- Até 20/10/2026 este arquivo filtrava só o E-commerce e nenhuma tela o usava (a página "Rentabilidade
--- Consolidado" consultava a lógica legada do E-commerce por engano).
+--   :canal = ''           → Consolidado (todas as empresas e canais)
+--   :canal = 'E-commerce' → visão E-commerce
+-- Desde a 0.4.0 (20/10/2026) a visão E-commerce também usa esta base (decisão do usuário); a consulta legada direto
+-- nas tabelas do SAP (_rentabilidade/Ecommerce.sql, ~30 s por dia) saiu — está no histórico do git.
 --
--- Decisões herdadas da reconstrução sobre a HL_RENTABILIDADE (confirmadas com o negócio):
+-- Regras da base (confirmadas com o negócio):
 --   1) sem regra especial de Amazon (se voltar, é na procedure de carga SP_CARGA_HL_RENTABILIDADE);
 --   2) ICMS Presumido é CRÉDITO: fica fora de "Total Impostos" (PIS+COFINS+IPI+DIFAL+Transferência) e já soma na
 --      receita da base;
 --   3) Vlr Anunciado = ValorTotal (maior entre VLRVEND rateado e o calculado).
 --
--- Filtros: :data_ini, :data_fim (YYYY-MM-DD), :marca (texto parcial; vazio = todas)
+-- Filtros: :data_ini, :data_fim (YYYY-MM-DD), :marca (texto parcial; vazio = todas), :canal (vazio = todos)
 -- Colunas: as que o painel lê (frontend/src/modulos/paineis/rentabilidade/dados.js) — não renomear sem ajustar lá.
 -- =====================================================================================
 SELECT
@@ -58,3 +59,4 @@ FROM "SBO_HLMOTOBIKE_PRD"."HL_RENTABILIDADE"
 WHERE "TIPO_ORIGEM" IN ('VENDA','VENDA_100_ESPECIAL')
   AND "DocDate" BETWEEN :data_ini AND :data_fim
   AND (:marca = '' OR "FirmName" LIKE '%' || :marca || '%')
+  AND (:canal = '' OR "Canal" = :canal)

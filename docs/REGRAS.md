@@ -59,10 +59,10 @@ Como o sistema funciona **hoje**. O caminho até aqui está no [HISTORICO.md](HI
 
 ## 5. Rentabilidade (`Comercial - Ecommerce/Rentabilidade`, painel)
 
-- **E-commerce**: consulta legada direto nas tabelas do SAP (`_rentabilidade/Ecommerce.sql`) — ICMS Presumido conta
-  como imposto (entra em "Total de impostos" e no quadro de impostos). Filtro de marca por texto parcial.
-- **Consolidado**: `HL_RENTABILIDADE`, **todas as empresas e canais**, mesmo critério do e-mail diário "Rentabilidade
-  Consolidada" (TIPO_ORIGEM VENDA e VENDA_100_ESPECIAL, data de emissão) — ICMS Presumido é **crédito** (card próprio,
-  fora dos impostos). Canal do Atacado aberto em Moto/Bike pelo setor do vendedor; filtro por canal na tela.
+- Fonte única `_rentabilidade/Vendas.sql` sobre a `HL_RENTABILIDADE`, mesmo critério do e-mail diário "Rentabilidade
+  Consolidada" (TIPO_ORIGEM VENDA e VENDA_100_ESPECIAL, data de emissão). Visão **E-commerce** = canal E-commerce;
+  **Consolidado** = todas as empresas e canais (desde a 0.4.0 as duas na mesma base).
+- ICMS Presumido é **crédito** (card próprio, fora dos impostos). Sem regra especial de Amazon. Filtro de marca por
+  texto parcial. No Consolidado, o Atacado abre em Moto/Bike pelo setor do vendedor; filtro por canal na tela.
 - Margem = receita líquida com crédito ÷ valor anunciado. "Mkp médio" = média simples do markup das linhas.
 - Gráficos: 5 maiores por valor anunciado + "Outros". Produtos e Marcas: 50 primeiros (botão "Mostrar todos").

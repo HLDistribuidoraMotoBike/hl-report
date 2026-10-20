@@ -3,6 +3,14 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.4.0 — 20/10/2026 — Rentabilidade E-commerce na base nova
+
+Decisão do usuário: a visão **E-commerce** também passa para a `HL_RENTABILIDADE` (a mesma do Consolidado e do
+e-mail). As duas visões usam agora uma consulta só (`_rentabilidade/Vendas.sql`, filtro `:canal`); a consulta legada
+(~30 s por dia) saiu. Efeitos nos números do E-commerce: sem a regra especial da Amazon e ICMS Presumido como
+**crédito** (card próprio, fora do total de impostos) — como já era no Consolidado. 19/10: E-commerce R$ 501.718,84
+(= e-mail).
+
 ### 0.3.0 — 20/10/2026 — Rentabilidade em React (etapa 3, 1º indicador) + correções
 
 Decisões do usuário: ordem da etapa 3 = Rentabilidade → Simulador (vai para o HL Backoffice: é formulário e vai

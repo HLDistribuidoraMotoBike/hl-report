@@ -1,7 +1,6 @@
 // Cálculos do painel de Rentabilidade (sem tela). Mesmas contas das páginas antigas RentabilidadeEcommerce.html /
-// RentabilidadeConsolidado.html (até a 0.2.0), agora sobre as duas fontes:
-//   ecommerce   — lógica legada do E-commerce (ICMS Presumido é imposto: entra em "Total Impostos")
-//   consolidado — HL_RENTABILIDADE, todas as empresas e canais (ICMS Presumido é CRÉDITO: fica fora dos impostos)
+// RentabilidadeConsolidado.html (até a 0.2.0), sobre a HL_RENTABILIDADE (ICMS Presumido é CRÉDITO: fica fora dos
+// impostos). Fonte: relatorios/sql/Comercial - Ecommerce/_rentabilidade/Vendas.sql.
 
 const n = v => Number(v) || 0
 const t = v => (v == null ? '' : String(v))

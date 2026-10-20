@@ -7,9 +7,9 @@ import {
 import './rentabilidade.css'
 
 // Painel de Rentabilidade (HL Report 0.3.0) — substitui as páginas RentabilidadeEcommerce.html e
-// RentabilidadeConsolidado.html. Visão E-commerce (lógica legada) ou Consolidado (HL_RENTABILIDADE, todas as
-// empresas e canais); fontes em config.fontes.
-const VISOES = [['ecommerce', 'E-commerce'], ['consolidado', 'Consolidado']]
+// RentabilidadeConsolidado.html. Uma fonte (config.fonte, base HL_RENTABILIDADE desde a 0.4.0): visão E-commerce
+// (canal = E-commerce) ou Consolidado (todas as empresas e canais).
+const VISOES = [['ecommerce', 'E-commerce', 'E-commerce'], ['consolidado', 'Consolidado', '']]   // [chave, rótulo, canal]
 const ABAS = [['visao', 'Visão geral'], ['graficos', 'Gráficos'], ['produtos', 'Produtos'], ['marcas', 'Marcas'], ['notas', 'Notas']]
 const LIMITE_TABELA = 50
 const hoje = () => new Date().toISOString().slice(0, 10)
@@ -122,7 +122,6 @@ function Detalhe({ grupo, tipo, onFechar }) {
 }
 
 export default function Rentabilidade({ config }) {
-  const fontes = config.fontes || {}
   const [visao, setVisao] = useState('ecommerce')
   const [filtros, setFiltros] = useState({ data_ini: hoje(), data_fim: hoje(), marca: '' })
   const [estado, setEstado] = useState('inicial')   // inicial | carregando | erro | ok
@@ -149,7 +148,7 @@ export default function Rentabilidade({ config }) {
     if (filtros.data_ini > filtros.data_fim) { setEstado('erro'); setErro('Data inicial maior que a final.'); return }
     setEstado('carregando'); setErro('')
     try {
-      const { data: json } = await executar(fontes[visao], filtros)
+      const { data: json } = await executar(config.fonte, { ...filtros, canal: VISOES.find(v => v[0] === visao)[2] })
       if (!json.ok) { setEstado('erro'); setErro(json.erro || 'Erro ao consultar.'); return }
       setResultado({ visao, filtros: { ...filtros }, linhas: json.data.map(mapear) })
       setCanal(''); setAbertas(new Set()); setDetalhe(null)
@@ -210,12 +209,14 @@ export default function Rentabilidade({ config }) {
           {estado === 'carregando' ? `Consultando… ${segundos}s` : '▶ Gerar'}
         </button>
       </div>
-      {visao === 'consolidado' && estado !== 'ok' && (
-        <div className="text-muted rt-nota">Consolidado: todas as empresas e canais (base HL_RENTABILIDADE, mesmo critério do e-mail diário). ICMS Presumido entra como crédito.</div>
+      {estado !== 'ok' && (
+        <div className="text-muted rt-nota">
+          Base HL_RENTABILIDADE (mesmo critério do e-mail diário). {visao === 'consolidado' ? 'Consolidado: todas as empresas e canais.' : 'Só o canal E-commerce.'} ICMS Presumido entra como crédito.
+        </div>
       )}
 
       {estado === 'inicial' && <div className="rl-estado">📊<div>Escolha a visão e o período e clique em <strong>Gerar</strong>.</div></div>}
-      {estado === 'carregando' && <div className="rl-estado"><div className="spinner" /><div>Consultando o banco… {visao === 'ecommerce' && 'a visão E-commerce pode levar até um minuto.'}</div></div>}
+      {estado === 'carregando' && <div className="rl-estado"><div className="spinner" /><div>Consultando o banco…</div></div>}
       {estado === 'erro' && <div className="alert alert-danger">⚠ {erro}</div>}
       {estado === 'ok' && ag.linhas === 0 && <div className="alert alert-info">Nenhuma venda no período.</div>}
 
@@ -238,7 +239,7 @@ export default function Rentabilidade({ config }) {
                   ['Valor anunciado', brl(ag.tot.vlr), 'destaque'],
                   ['Receita líquida c/ crédito', brl(ag.tot.receita), 'destaque verde'],
                   ['Crédito Pirelli', brl(ag.tot.credPirelli), 'azul'],
-                  ...(consolidado ? [['Crédito presumido (ICMS)', brl(ag.tot.presumido), 'verde']] : []),
+                  ['Crédito presumido (ICMS)', brl(ag.tot.presumido), 'verde'],
                   ['Valor de NF emitida', brl(ag.tot.vlrNF), ''],
                   ['Total de impostos', brl(ag.tot.impostos), 'vermelho'],
                   ['Receita bruta', brl(ag.tot.receitaBruta), ''],
@@ -252,7 +253,7 @@ export default function Rentabilidade({ config }) {
               <div className="adm-secao">Impostos</div>
               <div className="rt-impostos">
                 {[['ICMS destacado', ag.tot.icms], ['DIFAL', ag.tot.difal], ['PIS', ag.tot.pis], ['COFINS', ag.tot.cofins], ['IPI', ag.tot.ipi],
-                  ...(consolidado ? [] : [['ICMS presumido', ag.tot.presumido]]), ['ICMS transferência', ag.tot.transferencia]].map(([r, v]) => (
+                  ['ICMS transferência', ag.tot.transferencia]].map(([r, v]) => (
                   <div key={r} className="rt-imposto"><span>{r}</span><b>{brl(v)}</b></div>
                 ))}
               </div>

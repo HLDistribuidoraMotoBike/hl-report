@@ -60,6 +60,8 @@ DESLIGADO até a fase 2.
 
 ## Por versão
 
+- **0.4.0**: sem migração; `relatorios\` inteira de novo (`_rentabilidade\Ecommerce.sql` e `Consolidado.sql` viraram
+  `Vendas.sql`).
 - **0.3.0**: sem migração. Em `relatorios\` saíram arquivos (páginas e configs antigos da Rentabilidade, 2 modelos sem
   uso, `Rentabilidade Ecommerce.sql`/`Rentabilidade Consolidado.sql` foram para `_rentabilidade\`) — copiar a pasta
   `relatorios\` inteira (substituir), não só os alterados.
