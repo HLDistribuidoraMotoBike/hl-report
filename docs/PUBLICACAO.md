@@ -77,14 +77,14 @@ DESLIGADO até a fase 2.
 
 ## Publicações seguintes
 
-1. Conferir a VM = última tag publicada.
-2. Parar o serviço (`parar-servico.bat`).
-3. Copiar os arquivos alterados do `backend\` e de `relatorios\`, e o `frontend\dist\` inteiro (substituir).
-4. Se o `requirements.txt` mudou: `venv\Scripts\python -m pip install -r requirements.txt`; se exigir outra versão
-   do hlcore, instalar o wheel novo (passo 4 da fase 1).
-5. `venv\Scripts\python migrar.py` (backup + migrações; sem migração não faz nada).
-6. Iniciar a tarefa; conferir `/api/health`. Quem estava com a tela aberta vê "Nova versão disponível — Recarregar".
-7. Tag `vX.Y.Z` no commit publicado e entrada no [HISTORICO.md](HISTORICO.md).
+Pelo processo padrão do hl-core (`hl-core\publicacao\README.md`), desde 20/10/2026:
+1. Desenvolvimento: `backend\venv\Scripts\python ..\hl-core\publicacao\preparar.py .` (na pasta do app) — confere git, VM = última
+   publicação e testes; monta `Z:\_publicacao\report-<versão>`.
+2. VM, PowerShell como Administrador: `powershell -ExecutionPolicy Bypass -File
+   C:\ProjetosHL\_publicacao\report-<versão>\publicar.ps1` (para, guarda o código atual, copia, instala, migra o
+   banco com backup, sobe e confere a versão; volta sozinho se falhar; log em `publicar.log`).
+3. Desenvolvimento: `preparar.py . --tag` e entrada no HISTORICO.md.
 
-Só SQL/config/página de relatório mudou? Basta copiar o arquivo para `relatorios\` — o app lê a cada execução, sem
-reiniciar.
+Relatórios editados pela tela (Configurações → Relatórios/Templates) ficam só na VM: o `preparar.py` para e lista
+quais ("diferente na VM"/"só na VM") — copiar esses arquivos de `Z:\hl-report\relatorios` para o repositório,
+commitar e preparar de novo (senão a publicação apagaria a edição).

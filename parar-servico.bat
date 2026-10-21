@@ -1,7 +1,7 @@
 @echo off
 rem Para SO o HL Report — nunca "taskkill python.exe": HL Logistica e HL Backoffice rodam na mesma VM.
-rem PORTA: a mesma do start-service.bat (9001 na fase em paralelo; 9000 depois da troca)
-set PORTA=9001
+rem PORTA: a mesma do start-service.bat (9000)
+set PORTA=9000
 net session >nul 2>&1
 if %errorLevel% neq 0 (
     powershell -Command "Start-Process cmd.exe -ArgumentList '/c \"%~f0\"' -Verb RunAs"

@@ -1,0 +1,13 @@
+{
+  "_doc": "Publicacao na VM pelo hl-core/publicacao (preparar.py no desenvolvimento, publicar.ps1 na VM).",
+  "app": "report",
+  "nome": "HL Report",
+  "pasta": "hl-report",
+  "porta": 9000,
+  "tarefa": "HL Report HLMotobike",
+  "versao_em": "backend/app/main.py",
+  "tag": "v{versao}",
+  "extras": [
+    "relatorios"
+  ]
+}

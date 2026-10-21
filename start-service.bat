@@ -1,7 +1,7 @@
 @echo off
 rem Chamado pela tarefa agendada "HL Report HLMotobike" (conta SYSTEM) — ver instalar-tarefa.ps1
-rem PORTA: 9001 enquanto roda em paralelo com o Report antigo (Flask, porta 9000); 9000 depois da troca (docs\PUBLICACAO.md)
-set PORTA=9001
+rem PORTA: 9000 (desde a troca de 20/10/2026; foi 9001 na fase em paralelo com o Report antigo)
+set PORTA=9000
 cd /d "C:\ProjetosHL\hl-report\backend"
 
 set LOG_DIR=C:\ProjetosHL\hl-report\logs
