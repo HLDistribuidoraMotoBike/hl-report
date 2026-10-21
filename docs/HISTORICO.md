@@ -3,6 +3,10 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 0.7.2 — 21/10/2026 — Ícone azul
+
+Ícone próprio de cada app (pedido do usuário, 21/10): Logística **verde**, Backoffice **vermelho**, Report **azul**, HL Acesso **preto** — `frontend/public/icone.png` (+ `favicon.png`/`favicon.ico` na aba do navegador). Aparece no topo do menu, no login e no trocador ▾ (cada app com o seu), pelo `LogoApp` do kit (hl-core 0.8.2).
+
 ### 0.7.1 — 20/10/2026 — Agendador por caixa/botão
 
 Pedido do usuário: "ficou muito ruim ter que escrever Ligado". O agendador de e-mail (`EMAIL_AGENDADOR`) virou caixa
