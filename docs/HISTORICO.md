@@ -3,6 +3,10 @@
 Registro de cada entrega (o que mudou e por quê). Regras vigentes: [REGRAS.md](REGRAS.md). A versão fica só em
 `backend/app/main.py` (`FastAPI(version=...)`).
 
+### 4.0.0 — 21/10/2026 — Camada nova
+
+Virada de numeração pedida pelo usuário (21/10/2026): depois da revisão de estrutura (hl-core compartilhado, API em /api, Alembic, publicação padronizada, erro único, kit de telas, módulos por domínio, login único pelo HL Acesso), **todos os apps HL e o hl-core passam a 4.0.0** — a "camada nova". Daqui em diante cada um sobe o último dígito por conta própria (4.0.1, 4.0.2…). Sem mudança de código; exige o hlcore 4.0.0 (formato único também para erros de login/validação).
+
 ### 0.7.2 — 21/10/2026 — Ícone azul
 
 Ícone próprio de cada app (pedido do usuário, 21/10): Logística **verde**, Backoffice **vermelho**, Report **azul**, HL Acesso **preto** — `frontend/public/icone.png` (+ `favicon.png`/`favicon.ico` na aba do navegador). Aparece no topo do menu, no login e no trocador ▾ (cada app com o seu), pelo `LogoApp` do kit (hl-core 0.8.2).
